@@ -50,7 +50,8 @@ def add():
         book = get_model().create(data)
 
         return redirect(url_for('.view', id=book['id']))
-
+        print("cacota1")
+    print("cacota2")
     return render_template("form.html", action="Add", book={})
 # [END add]
 
