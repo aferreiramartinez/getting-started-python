@@ -13,9 +13,18 @@
 # limitations under the License.
 
 import logging
-import http.client, urllib.request, urllib.parse, urllib.error, base64, json
+import http.client, urllib.request, urllib.parse, urllib.error, base64, json, time
 from pprint import pprint
 from flask import current_app, Flask, redirect, url_for
+
+def retrieve_sp_500_tickers():
+    # load json with S&P 500 companies#
+    data = json.load(open('./bookshelf/SP500.json','r'))
+    tickers = []
+    for company in data["SP500"]:
+        tickers.append(company["Ticker"])
+    return tickers
+
 
 def get_fundamentals(iModel):
     headers = {
@@ -29,13 +38,36 @@ def get_fundamentals(iModel):
         'filingOrder': '0',
     })
 
+    #tickers = retrieve_sp_500_tickers()
+    dataType = {"Balance Sheet":{}}
+    dataYear = {"2016-10K":{}}
+    errorList = []
+    companies = json.load(open('./bookshelf/SP500.json','r'))
     conn = http.client.HTTPSConnection('services.last10k.com')
-    conn.request("GET", "/v1/company/TTWO/balancesheet?%s" % params, "{body}", headers)
-    response = conn.getresponse()
-    print(response.status)
-    data = response.read().decode('utf-8')
-    jsonData = json.loads(data)
-    add_to_mongo(iModel,jsonData)
+    for company in companies["SP500"]:
+        conn.request("GET", "/v1/company/"+company["Ticker"]+"/balancesheet?%s" % params, "{body}", headers)
+        response = conn.getresponse()
+        print(str(response.status) + company["Ticker"])
+        if (response.status == 404):
+            time.sleep(12.01)
+            conn.request("GET", "/v1/company/"+company["Ticker"]+"/balancesheet?%s" % params, "{body}", headers)
+            response = conn.getresponse()
+            print("second attempt "+str(response.status))
+        if (response.status == 200):
+            data = response.read().decode('utf-8')
+            jsonData = json.loads(data)
+            del jsonData['Content'] #deletes HTML content and URL to save space
+            del jsonData['Url']
+            dataType["Balance Sheet"]=jsonData
+            dataYear["2016-10K"]=dataType
+            company.update(dataYear)
+            add_to_mongo(iModel,company)
+            time.sleep(12.01)
+        else:
+            print("error, skip "+str(company["Ticker"]))
+            errorList.append(company["Ticker"])
+            time.sleep(60)
+            continue
     conn.close()
 
 def create_app(config, debug=False, testing=False, config_overrides=None):
@@ -100,7 +132,7 @@ def get_model():
 
 def add_to_mongo(iModel,iData):
     #data = iData.to_dict(flat=True)
-    del iData['Content']
+    #del iData['Content']
     from . import model_mongodb
     iModel.create(iData)
     print("added to mongo")

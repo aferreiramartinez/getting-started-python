@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="app-engine-flexible" name="Google App Engine Flexible">
+      <configuration>
+        <option name="appYamlPath" value="C:\Users\ant1_\Documents\Git Repos\getting-started-python\2-structured-data\src\main\appengine\app.yaml" />
+        <option name="dockerDirectory" value="C:\Users\ant1_\Documents\Git Repos\getting-started-python\2-structured-data\src\main\docker" />
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>
