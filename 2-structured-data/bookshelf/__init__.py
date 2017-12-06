@@ -25,19 +25,33 @@ def retrieve_sp_500_tickers():
         tickers.append(company["Ticker"])
     return tickers
 
+def get_message_headers(iIndex):
 
-def get_fundamentals(iModel):
+    # Request headers
+    #ant1bball
+    #'Ocp-Apim-Subscription-Key': '4137e8075de949d49d3cd644cd81b884'
+    #leo.fercom1
+    #'Ocp-Apim-Subscription-Key': '999bcdb357474cf8bb325e75ef19666d'
+
+    pool_api_keys=['4137e8075de949d49d3cd644cd81b884', '999bcdb357474cf8bb325e75ef19666d']
     headers = {
         # Request headers
-        'Ocp-Apim-Subscription-Key': '4137e8075de949d49d3cd644cd81b884',
+        'Ocp-Apim-Subscription-Key': pool_api_keys[iIndex]
     }
+    return headers
 
+def get_requesst_params(iFormType,iFilingOrder):
     params = urllib.parse.urlencode({
         # Request parameters
-        'formType': '10-K',
-        'filingOrder': '0',
+        'formType': iFormType,
+        'filingOrder': iFilingOrder,
     })
 
+def get_balance_sheet(iModel):
+    #Prepare request
+    get_message_headers(0)
+    get_requesst_params('10-K','0')
+    
     #tickers = retrieve_sp_500_tickers()
     dataType = {"Balance Sheet":{}}
     dataYear = {"2016-10K":{}}
@@ -48,10 +62,9 @@ def get_fundamentals(iModel):
         conn.request("GET", "/v1/company/"+company["Ticker"]+"/balancesheet?%s" % params, "{body}", headers)
         response = conn.getresponse()
         print(str(response.status) + company["Ticker"])
-        if (response.status == 404):
-            time.sleep(12.01)
-            conn.request("GET", "/v1/company/"+company["Ticker"]+"/balancesheet?%s" % params, "{body}", headers)
-            response = conn.getresponse()
+        if (response.status != 200):
+            conn.close()
+            conn = http.client.HTTPSConnection('services.last10k.com')
             print("second attempt "+str(response.status))
         if (response.status == 200):
             data = response.read().decode('utf-8')
@@ -66,7 +79,7 @@ def get_fundamentals(iModel):
         else:
             print("error, skip "+str(company["Ticker"]))
             errorList.append(company["Ticker"])
-            time.sleep(60)
+            time.sleep(12)
             continue
     conn.close()
 
@@ -88,7 +101,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     with app.app_context():
         model = get_model()
         model.init_app(app)
-        get_fundamentals(model)
+        get_balance_sheet(model)
 
     # Register the Bookshelf CRUD blueprint.
     from .crud import crud
