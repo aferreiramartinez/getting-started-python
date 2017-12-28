@@ -13,9 +13,20 @@
 # limitations under the License.
 
 import logging
-import http.client, urllib.request, urllib.parse, urllib.error, base64, json, time
+from lxml import html
+import http.client, urllib.request, urllib.parse, urllib.error, base64, json, time, datetime, math, requests
+import eikon as ek
+import pandas as pd
 from pprint import pprint
 from flask import current_app, Flask, redirect, url_for
+
+# operations https://services.last10k.com/v1/company/{ticker}/operations?formType=10-K&filingOrder=0
+# liabilities https://services.last10k.com/v1/company/{ticker}/liabilities?formType=10-K&filingOrder=0
+# stock-quote https://services.last10k.com/v1/company/VIAB/quote
+# conn.request("GET", "/v1/company/latestfilings?%s" % params, "{body}", headers) https://services.last10k.com/v1/company/latestfilings[?formType]
+ek.set_app_id('9FB32FA719C8F1EE8CDEF1A')
+#pd.set_option('display.max_columns', 10000)
+pd.options.display.max_colwidth = 10000
 
 def retrieve_sp_500_tickers():
     # load json with S&P 500 companies#
@@ -25,7 +36,7 @@ def retrieve_sp_500_tickers():
         tickers.append(company["Ticker"])
     return tickers
 
-def get_message_headers(iIndex):
+def set_last10k_req_headers(iIndex):
 
     # Request headers
     #ant1bball
@@ -40,21 +51,144 @@ def get_message_headers(iIndex):
     }
     return headers
 
-def get_requesst_params(iFormType,iFilingOrder):
+def set_last10k_req_params(iFormType,iFilingOrder):
     params = urllib.parse.urlencode({
         # Request parameters
         'formType': iFormType,
         'filingOrder': iFilingOrder,
     })
+    return params
 
-def get_balance_sheet(iModel):
+def get_last10k_form_name(iFormType):
+    now = datetime.datetime.now()
+    if (iFormType == '10-K'):
+        return  str(now.year-1)+'-10K'
+    elif (iFormType == '10-Q'):
+        currentQuarter = math.ceil(now.month/3.)
+        return  str(now.year-1)+'-10Q-Q'+str(currentQuarter)
+
+def isin_file_to_tickers():
+    eikonTickers = []
+    with open("bookshelf/eikonIsin.txt") as file:
+        for line in file:
+            time.sleep(0.25)
+            line = line.replace('\n','')
+            ticker = ek.get_symbology(line,from_symbol_type='ISIN', to_symbol_type="RIC",raw_output=True)
+            mappedSymb=ticker.get('mappedSymbols')
+            firstmappedSymb=mappedSymb[0]
+            (key, value), = firstmappedSymb.get('bestMatch').items()
+            if key != 'error':
+                eikonTickers.append(value)
+                print(value)
+            else:
+                continue
+    return eikonTickers
+
+#def get_eikon_data():
+#    tickers = isin_file_to_tickers()
+#    thefile = open('test.txt', 'w')
+#    for item in tickers:
+#        regularTicker=item.split('.', 1)[0]
+#        regularTicker=regularTicker.split('^', 1)[0]
+
+def get_business_summary(iEikonTicker):
+    df = ek.get_data(iEikonTicker, 'TR.BusinessSummary',raw_output=True)
+    return df['data'][0][1]
+
+def get_common_name(iEikonTicker):
+    df = ek.get_data(iEikonTicker, 'TR.CommonName',raw_output=True)
+    return df['data'][0][1]
+
+def get_52_week_high_low(iEikonTicker):
+    df = ek.get_data(iEikonTicker, ['TR.Price52WeekHigh','TR.Price52WeekHigh'], raw_output=True)
+    a52WeekHigh = df['data'][0][1]
+    a52WeekLow = df['data'][0][2]
+    return [a52WeekHigh,a52WeekLow]
+
+def get_betas(iEikonTicker):
+    df = ek.get_data(iEikonTicker,
+                     ['TR.BetaWkly3Y',
+                      'TR.BetaWklyUp3Y',
+                      'TR.BetaWklyDown3Y',
+                      'TR.BetaWkly2Y',
+                      'TR.BetaWklyUp2Y',
+                      'TR.BetaWklyDown2Y'],
+                     raw_output=True)
+    aBetaWkly3Y=df['data'][0][1]
+    aBetaWklyUp3Y=df['data'][0][2]
+    aBetaWklyDown3Y=df['data'][0][3]
+    aBetaWkly2Y=df['data'][0][4]
+    aBetaWklyUp2Y=df['data'][0][5]
+    aBetaWklyDown2Y=df['data'][0][6]
+    return [aBetaWkly3Y,aBetaWklyUp3Y,aBetaWklyDown3Y,aBetaWkly2Y,aBetaWklyUp2Y,aBetaWklyDown2Y]
+
+def get_daily_updates(iEikonTicker):
+    df = ek.get_data(iEikonTicker, ['TR.CompanyMarketCap','TR.EV'], raw_output=True)
+    aCompanyMktCap = df['data'][0][1]
+    aCompanyEV = df['data'][0][2]
+    return [aCompanyMktCap,aCompanyEV]
+
+def get_minority_interest(iEikonTicker):
+    df = ek.get_data(iEikonTicker, 'TR.MinorityInterestNonRedeemable', raw_output=True)
+    return df['data'][0][1]
+
+def get_major_shareholders(iSimplifiedTicker):
+    #Init dictionaries
+    aMajorOwners={"Top-10-Owners":{}}
+    aMajorFunds={"Top-10-Mutual-Funds":{}}
+    aTopOwnersDict={}
+    aTopFundsDict={}
+
+    #Request page and parse
+    page = requests.get('http://money.cnn.com/quote/shareholders/shareholders.html?symb='+str(iSimplifiedTicker)+'&subView=institutional')
+    tree = html.document_fromstring(page.content)
+    for x in range (1,11):
+        aPercDict1={}
+        aPercDict2={}
+        aTopOwner = tree.xpath('//*[@id="wsod_shareholders"]/table[2]/tbody/tr['+str(x)+']/td[1]/span')
+        if (len(aTopOwner)>0):
+            #Extract top 5 owners and mutual funds percentages of ownership
+            aTopOwnerPerc = tree.xpath('//*[@id="wsod_shareholders"]/table[2]/tbody/tr['+str(x)+']/td[2]')
+            aFund = tree.xpath('//*[@id="wsod_shareholders"]/table[3]/tbody/tr['+str(x)+']/td[1]/span')
+            aFundPerc = tree.xpath('//*[@id="wsod_shareholders"]/table[3]/tbody/tr['+str(x)+']/td[2]')
+
+            #Top Owners names and percentages
+            aTopOwnerName=aTopOwner[0].attrib.get('title')
+            aTopOwnerPerc=aTopOwnerPerc[0].text_content()
+            aPercDict1["Percentage"]=aTopOwnerPerc
+            aTopOwnersDict[aTopOwnerName]=aPercDict1
+
+            #Top Funds names and percentages
+            aTopaFundName=aFund[0].attrib.get('title')
+            aTopFundPerc=aFundPerc[0].text_content()
+            aPercDict2["Percentage"]=aTopFundPerc
+            aTopFundsDict[aTopaFundName]=aPercDict2
+
+    aMajorOwners["Top-10-Owners"]=aTopOwnersDict
+    aMajorFunds["Top-10-Mutual-Funds"]=aTopFundsDict
+    return [aMajorOwners,aMajorFunds]
+
+
+def get_all_eikon_data(iEikonTickers):
+    for aEikonTicker in iEikonTickers:
+        aBusinessSummary=get_business_summary(aEikonTicker)
+        aCompanyName=get_common_name(aEikonTicker)
+        a52WeekHighLow=get_52_week_high_low(aEikonTicker)
+        aBetas=get_betas(aEikonTicker)
+        aDailyUpdates=get_daily_updates(aEikonTicker)
+        aMinInterest=get_minority_interest(aEikonTicker)
+        aMajorShareholders=get_major_shareholders(aRegularTicker)
+
+
+def get_last10k_balance_sheet(iMDBModel, iFormType, numberFilingsBack):
     #Prepare request
-    get_message_headers(0)
-    get_requesst_params('10-K','0')
-    
+    APIPoolIndex = 0
+    headers = set_last10k_req_headers(APIPoolIndex)
+    params = set_last10k_req_params(iFormType,numberFilingsBack)
+
     #tickers = retrieve_sp_500_tickers()
     dataType = {"Balance Sheet":{}}
-    dataYear = {"2016-10K":{}}
+    dataYear = {get_last10k_form_name(iFormType):{}}
     errorList = []
     companies = json.load(open('./bookshelf/SP500.json','r'))
     conn = http.client.HTTPSConnection('services.last10k.com')
@@ -62,10 +196,15 @@ def get_balance_sheet(iModel):
         conn.request("GET", "/v1/company/"+company["Ticker"]+"/balancesheet?%s" % params, "{body}", headers)
         response = conn.getresponse()
         print(str(response.status) + company["Ticker"])
-        if (response.status != 200):
+        if (response.status == 403):
+            print('Max queries detected, changing API key')
             conn.close()
+            time.sleep(12)
+            headers = set_last10k_req_headers(APIPoolIndex+1)
             conn = http.client.HTTPSConnection('services.last10k.com')
-            print("second attempt "+str(response.status))
+            conn.request("GET", "/v1/company/"+company["Ticker"]+"/balancesheet?%s" % params, "{body}", headers)
+            response = conn.getresponse()
+
         if (response.status == 200):
             data = response.read().decode('utf-8')
             jsonData = json.loads(data)
@@ -74,8 +213,8 @@ def get_balance_sheet(iModel):
             dataType["Balance Sheet"]=jsonData
             dataYear["2016-10K"]=dataType
             company.update(dataYear)
-            add_to_mongo(iModel,company)
-            time.sleep(12.01)
+            add_to_mongo(iMDBModel,company)
+            time.sleep(12)
         else:
             print("error, skip "+str(company["Ticker"]))
             errorList.append(company["Ticker"])
@@ -84,6 +223,7 @@ def get_balance_sheet(iModel):
     conn.close()
 
 def create_app(config, debug=False, testing=False, config_overrides=None):
+
     app = Flask(__name__)
     app.config.from_object(config)
 
@@ -101,7 +241,8 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     with app.app_context():
         model = get_model()
         model.init_app(app)
-        get_balance_sheet(model)
+        #get_last10k_balance_sheet(model,'10-K','0')
+        #get_all_eikon_data()
 
     # Register the Bookshelf CRUD blueprint.
     from .crud import crud

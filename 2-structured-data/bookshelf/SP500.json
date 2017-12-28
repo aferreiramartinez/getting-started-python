@@ -1,6 +1,11 @@
 {
 "SP500":[
- {
+  {
+    "Ticker": "AAPL",
+    "Security": "APPLE INC",
+    "CIK": 320193
+  },
+  {
    "Ticker": "ABC",
    "Security": "AmerisourceBergen Corp",
    "GICS Sector": "Health Care",
