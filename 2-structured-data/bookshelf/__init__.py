@@ -244,21 +244,20 @@ def retrieve_fiscal_year_data(iEikonTicker):
 
 def retrieve_estimated_fiscal_year_data(iEikonTicker):
     aFiscalYears=['FY1','FY2','FY3']
-    aLabels=['RevenueMean',
+    aLabels=['TotalRevenueMean',
              'EPSSmart',
              'EPSMean',
              'EVMean',
              'DPSMean',
              'DPSSmart',
-             'EBITDASmartEst',
+             'EBITDASmart',
              'EBITDAMean',
-             'EBITSmartEst',
+             'EBITSmart',
              'EBITMean',
              'EV/EBITDASmart',
              'FwdEV/EBITDASmart',
              'FwdEV/EBITSmart',
-             'NetDebtMean',
-             'EVMean']
+             'NetDebtMean']
     aFYDataDict={}
     oListJson=[]
     print('a')
@@ -284,8 +283,7 @@ def retrieve_estimated_fiscal_year_data(iEikonTicker):
              'TR.EVtoEBITDASmartEst(Period='+fy+')',
              'TR.FwdEVtoEBTSmartEst(Period='+fy+')',
              'TR.FwdEVtoEBISmartEst(Period='+fy+')',
-             'TR.NetDebtMean(Period='+fy+')',
-             'TR.EVMean(Period='+fy+')'],
+             'TR.NetDebtMean(Period='+fy+')'],
             raw_output=True)
 
         #Get array of all data
