@@ -14,7 +14,7 @@
 
 import logging
 from lxml import html
-import http.client, urllib.request, urllib.parse, urllib.error, base64, json, time, datetime, math, requests, calendar
+import http.client, urllib.request, urllib.parse, urllib.error, base64, json, time, datetime, math, requests, calendar,copy
 import eikon as ek
 import pandas as pd
 from pprint import pprint
@@ -68,8 +68,13 @@ def get_last10k_form_name(iFormType):
         currentQuarter = math.ceil(now.month/3.)
         return  str(now.year-1)+'-10Q-Q'+str(currentQuarter)
 
+def eikon_to_regular_ticker(iEikonTicker):
+    regularTicker=iEikonTicker.split('.', 1)[0]
+    regularTicker=regularTicker.split('.', 1)[0]
+
 def isin_file_to_tickers():
     eikonTickers = []
+    regularTickers = []
     with open("bookshelf/eikonIsin.txt") as file:
         for line in file:
             time.sleep(0.25)
@@ -142,12 +147,13 @@ def get_fiscal_year_dates(iEikonTicker):
     aMonthDay=df['data'][0][1].split("-")[2]
     return (aMonthDay+'-'+aMonthName)
 
-def get_major_shareholders(iSimplifiedTicker):
+def get_major_shareholders(iEikonTicker):
     #Init dictionaries
     aMajorOwners={"Top-10-Owners":{}}
     aMajorFunds={"Top-10-Mutual-Funds":{}}
     aTopOwnersDict={}
     aTopFundsDict={}
+    iSimplifiedTicker=eikon_to_regular_ticker(iEikonTicker)
 
     #Request page and parse
     page = requests.get('http://money.cnn.com/quote/shareholders/shareholders.html?symb='+str(iSimplifiedTicker)+'&subView=institutional')
@@ -187,11 +193,10 @@ def get_all_eikon_data(iEikonTickers):
         aListBetas=get_betas(aEikonTicker)
         aListDailyUpdates=get_daily_updates(aEikonTicker)
         aMinInterest=get_minority_interest(aEikonTicker)
-        aMajorShareholders=get_major_shareholders(aRegularTicker)
+        aMajorShareholders=get_major_shareholders(aEikonTicker)
         aFiscalYearEndDate=get_fiscal_year_dates(aEikonTicker)
 
-def retrieve_fiscal_year_data(iEikonTicker):
-    aFiscalYears=['FY0','FY-1','FY-2']
+def retrieve_eikon_reports(iEikonTicker, iPeriod):
     aLabels=['EBITDA',
              'EBIT',
              'TotalRevenue',
@@ -204,33 +209,37 @@ def retrieve_fiscal_year_data(iEikonTicker):
              'EV/EBITDA',
              'EV/EBIT',
              'NetDebt']
+
+    df = ek.get_data(iEikonTicker,
+                     ['TR.EBITDAActValue(Period='+iPeriod+')',
+                      'TR.EBITActValue(Period='+iPeriod+')',
+                      'TR.TotalRevenue(Period='+iPeriod+')',
+                      'TR.EPSActValue(Period='+iPeriod+')',
+                      'TR.TtlCmnSharesOut(Period='+iPeriod+')',
+                      'TR.CashAndSTInvestments(Period='+iPeriod+')',
+                      'TR.TotalDebtOutstanding(Period='+iPeriod+')',
+                      'TR.MinorityInterestNonRedeemable(Period='+iPeriod+')',
+                      'TR.DpsCommonStock(Period='+iPeriod+')',
+                      'TR.HistEnterpriseValueEBITDA(Period='+iPeriod+')',
+                      'TR.EVEBIT(Period='+iPeriod+')',
+                      'TR.NetDebt(Period='+iPeriod+')'],
+                     raw_output=True)
+    return [aLabels,df]
+
+def retrieve_fiscal_year_data(iEikonTicker):
+    aFiscalYears=['FY0','FY-1','FY-2']
     aFYDataDict={}
     oListJson=[]
 
-    #Obtain last reported Fiscal Year
-    print("a")
+    #Obtain last reported Fiscal Year date
     df = ek.get_data(iEikonTicker,'TR.EBITDA(Period=FY0).periodenddate',raw_output=True)
-    print("b")
     aLastFYEnd=df['data'][0][1].split("-")
     aLastFYEnd=datetime(int(aLastFYEnd[0]),int(aLastFYEnd[1].lstrip("0")),int(aLastFYEnd[2].lstrip("0")))
     aFY0=aLastFYEnd.year
 
     for fy in aFiscalYears:
         #NOTE:Historic fiscal year price close
-        df = ek.get_data(iEikonTicker,
-            ['TR.EBITDAActValue(Period='+fy+')',
-             'TR.EBITActValue(Period='+fy+')',
-             'TR.TotalRevenue(Period='+fy+')',
-             'TR.EPSActValue(Period='+fy+')',
-             'TR.TtlCmnSharesOut(Period='+fy+')',
-             'TR.CashAndSTInvestments(Period='+fy+')',
-             'TR.TotalDebtOutstanding(Period='+fy+')',
-             'TR.MinorityInterestNonRedeemable(Period='+fy+')',
-             'TR.DpsCommonStock(Period='+fy+')',
-             'TR.HistEnterpriseValueEBITDA(Period='+fy+')',
-             'TR.EVEBIT(Period='+fy+')',
-             'TR.NetDebt(Period='+fy+')'],
-             raw_output=True)
+        aLabels,df = retrieve_eikon_reports(iEikonTicker, fy)
 
         #Get array of all data
         aDfLen=len(df['data'][0])-1
@@ -238,12 +247,12 @@ def retrieve_fiscal_year_data(iEikonTicker):
         for idx in range(0,aDfLen):
             aFYDataDict[aLabels[idx]]=df['data'][0][idx+1]
         aFYJson["FY"+str(aFY0)]=aFYDataDict
-        oListJson.append(aFYJson)
+        oListJson.append(copy.deepcopy(aFYJson))
         aFY0=aFY0-1
+        print('------------')
     print(oListJson)
 
-def retrieve_estimated_fiscal_year_data(iEikonTicker):
-    aFiscalYears=['FY1','FY2','FY3']
+def retrieve_eikon_estimates(iEikonTicker, iPeriod):
     aLabels=['TotalRevenueMean',
              'EPSSmart',
              'EPSMean',
@@ -258,33 +267,38 @@ def retrieve_estimated_fiscal_year_data(iEikonTicker):
              'FwdEV/EBITDASmart',
              'FwdEV/EBITSmart',
              'NetDebtMean']
+
+    df = ek.get_data(iEikonTicker,
+                     ['TR.RevenueMean(Period='+iPeriod+')',
+                      'TR.EpsSmartEst(Period='+iPeriod+')',
+                      'TR.EPSMean(Period='+iPeriod+')',
+                      'TR.EVMean(Period='+iPeriod+')',
+                      'TR.DPSMean(Period='+iPeriod+')',
+                      'TR.DPSSmartEst(Period='+iPeriod+')',
+                      'TR.EBITDASmartEst(Period='+iPeriod+')',
+                      'TR.EBITDAMean(Period='+iPeriod+')',
+                      'TR.EBITSmartEst(Period='+iPeriod+')',
+                      'TR.EBITMean(Period='+iPeriod+')',
+                      'TR.EVtoEBITDASmartEst(Period='+iPeriod+')',
+                      'TR.FwdEVtoEBTSmartEst(Period='+iPeriod+')',
+                      'TR.FwdEVtoEBISmartEst(Period='+iPeriod+')',
+                      'TR.NetDebtMean(Period='+iPeriod+')'],
+                     raw_output=True)
+    return [aLabels,df]
+
+def retrieve_estimated_fiscal_year_data(iEikonTicker):
+    aFiscalYears=['FY1','FY2','FY3']
     aFYDataDict={}
     oListJson=[]
-    print('a')
+    #df = ek.get_data(iEikonTicker,'TR.EpsSmartEst(Period=FY1).fperiod',raw_output=True)
     df = ek.get_data(iEikonTicker,'TR.EpsSmartEst(Period=FY1).periodenddate',raw_output=True)
-    print('b')
     aLastFYEnd=df['data'][0][1].split("-")
     aLastFYEnd=datetime(int(aLastFYEnd[0]),int(aLastFYEnd[1].lstrip("0")),int(aLastFYEnd[2].lstrip("0")))
     aFY1=aLastFYEnd.year
 
     for fy in aFiscalYears:
         #NOTE:Historic fiscal year price close
-        df = ek.get_data(iEikonTicker,
-            ['TR.RevenueMean(Period='+fy+')',
-             'TR.EpsSmartEst(Period='+fy+')',
-             'TR.EPSMean(Period='+fy+')',
-             'TR.EVMean(Period='+fy+')',
-             'TR.DPSMean(Period='+fy+')',
-             'TR.DPSSmartEst(Period='+fy+')',
-             'TR.EBITDASmartEst(Period='+fy+')',
-             'TR.EBITDAMean(Period='+fy+')',
-             'TR.EBITSmartEst(Period='+fy+')',
-             'TR.EBITMean(Period='+fy+')',
-             'TR.EVtoEBITDASmartEst(Period='+fy+')',
-             'TR.FwdEVtoEBTSmartEst(Period='+fy+')',
-             'TR.FwdEVtoEBISmartEst(Period='+fy+')',
-             'TR.NetDebtMean(Period='+fy+')'],
-            raw_output=True)
+        aLabels,df = retrieve_eikon_estimates(iEikonTicker, fy)
 
         #Get array of all data
         aDfLen=len(df['data'][0])-1
@@ -294,11 +308,28 @@ def retrieve_estimated_fiscal_year_data(iEikonTicker):
             print(aLabels[idx])
             print(df['data'][0][idx+1])
         aFYJson["FY"+str(aFY1)]=aFYDataDict
-        oListJson.append(aFYJson)
+        oListJson.append(copy.deepcopy(aFYJson))
         print(oListJson)
         aFY1=aFY1+1
-        print('--------------------')
+    return oListJson
 
+def retrieve_estimated_fiscal_quarter_data(iEikonTicker):
+    aFiscalQuarters=['FQ1','FQ2','FQ3','FQ4']
+    aFQDataDict={}
+    oListJson=[]
+    aFQDataDict["estimated"]=True
+    for fq in aFiscalQuarters:
+        df = ek.get_data(iEikonTicker,'TR.EpsSmartEst(Period='+fq+').fperiod',raw_output=True)
+        aQuarter=df['data'][0][1]
+        aLabels,df = retrieve_eikon_estimates(iEikonTicker, fq)
+        aDfLen=len(df['data'][0])-1
+        aFYJson={str(aQuarter):{}}
+        for idx in range(0,aDfLen):
+            aFQDataDict[aLabels[idx]]=df['data'][0][idx+1]
+        aFYJson[str(aQuarter)]=aFQDataDict
+        oListJson.append(copy.deepcopy(aFYJson))
+    print(oListJson)
+    return oListJson
 
 def retrieve_estimates_year_data(iEikonTicker):
     df = ek.get_data(iEikonTicker,'TR.EBITDAActValue(Period=FY0)',raw_output=True)
@@ -366,7 +397,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         model.init_app(app)
         #get_last10k_balance_sheet(model,'10-K','0')
         #get_all_eikon_data()
-        retrieve_estimated_fiscal_year_data('IBM')
+        retrieve_estimated_fiscal_quarter_data('IBM')
 
     # Register the Bookshelf CRUD blueprint.
     from .crud import crud
