@@ -60,14 +60,14 @@ def list(limit=10, cursor=None):
 
 # [START read]
 def read(id):
-    result = mongo.db.fundamentals.find_one(_id(id))
+    result = mongo.db.eikon.find_one(_id(id))
     return from_mongo(result)
 # [END read]
 
 
 # [START create]
 def create(data):
-    new_id = mongo.db.fundamentals.insert(data)
+    new_id = mongo.db.eikon.insert(data)
     return read(new_id)
 # [END create]
 

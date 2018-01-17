@@ -11,41 +11,59 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="crud.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bookshelf/crud.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="23" column="11" lean-forward="false" selection-start-line="23" selection-start-column="11" selection-end-line="23" selection-end-column="11" />
-              <folding>
-                <element signature="e#576#607#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="__init__.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bookshelf/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="224">
-              <caret line="319" column="15" lean-forward="false" selection-start-line="319" selection-start-column="4" selection-end-line="319" selection-end-column="15" />
+            <state relative-caret-position="359">
+              <caret line="313" column="40" lean-forward="true" selection-start-line="313" selection-start-column="23" selection-end-line="313" selection-end-column="40" />
               <folding>
                 <element signature="e#576#590#0" expanded="true" />
                 <element signature="e#1467#1671#0" expanded="false" />
-                <element signature="e#1715#2120#0" expanded="false" />
-                <element signature="e#2178#2333#0" expanded="false" />
-                <element signature="e#2377#2617#0" expanded="false" />
-                <element signature="e#4193#4815#0" expanded="false" />
-                <element signature="e#13418#15148#0" expanded="false" />
+                <element signature="e#1704#1879#0" expanded="false" />
+                <element signature="e#1923#2328#0" expanded="false" />
+                <element signature="e#2386#2541#0" expanded="false" />
+                <element signature="e#2585#2825#0" expanded="false" />
+                <element signature="e#2874#3079#0" expanded="false" />
+                <element signature="e#3847#4472#0" expanded="false" />
+                <element signature="e#4750#4942#0" expanded="false" />
+                <element signature="e#4983#5130#0" expanded="false" />
+                <element signature="e#5176#5428#0" expanded="false" />
+                <element signature="e#5463#6131#0" expanded="false" />
+                <element signature="e#6174#6604#0" expanded="false" />
+                <element signature="e#6651#6858#0" expanded="false" />
+                <element signature="e#6905#7238#0" expanded="false" />
+                <element signature="e#7286#9144#0" expanded="false" />
+                <element signature="e#17440#19170#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test.txt">
+      <file leaf-file-name="eikonTickersOriginal.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/eikonTickersOriginal.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="24" column="3" lean-forward="false" selection-start-line="24" selection-start-column="3" selection-end-line="24" selection-end-column="3" />
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="eikonTickers.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/eikonTickers.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="425">
+              <caret line="25" column="2" lean-forward="true" selection-start-line="25" selection-start-column="2" selection-end-line="25" selection-end-column="2" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SP500.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bookshelf/SP500.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="34">
+              <caret line="2" column="3" lean-forward="false" selection-start-line="2" selection-start-column="3" selection-end-line="2" selection-end-column="3" />
               <folding />
             </state>
           </provider>
@@ -54,18 +72,28 @@
       <file leaf-file-name="eikonIsin.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bookshelf/eikonIsin.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="8959">
-              <caret line="527" column="0" lean-forward="false" selection-start-line="527" selection-start-column="0" selection-end-line="527" selection-end-column="0" />
+            <state relative-caret-position="284">
+              <caret line="418" column="12" lean-forward="true" selection-start-line="418" selection-start-column="12" selection-end-line="418" selection-end-column="12" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/main.py">
+      <file leaf-file-name="requirements-dev.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/requirements-dev.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="391">
-              <caret line="24" column="87" lean-forward="false" selection-start-line="24" selection-start-column="87" selection-end-line="24" selection-end-column="87" />
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="requirements.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/requirements.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="51">
+              <caret line="3" column="19" lean-forward="true" selection-start-line="3" selection-start-column="19" selection-end-line="3" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -74,11 +102,31 @@
       <file leaf-file-name="model_mongodb.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bookshelf/model_mongodb.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1139">
-              <caret line="68" column="10" lean-forward="false" selection-start-line="68" selection-start-column="4" selection-end-line="68" selection-end-column="10" />
+            <state relative-caret-position="299">
+              <caret line="69" column="27" lean-forward="false" selection-start-line="69" selection-start-column="27" selection-end-line="69" selection-end-column="27" />
               <folding>
                 <element signature="e#576#610#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RemoveDuplicates.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/RemoveDuplicates.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="3" lean-forward="false" selection-start-line="0" selection-start-column="3" selection-end-line="0" selection-end-column="3" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="tcolor" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/env/tcl/tk8.6/demos/tcolor">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="196">
+              <caret line="312" column="45" lean-forward="false" selection-start-line="312" selection-start-column="45" selection-end-line="312" selection-end-column="45" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -87,40 +135,41 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>app_context</find>
-      <find>json</find>
-      <find>app.run</find>
-      <find>get_fundamentals</find>
-      <find>time</find>
-      <find>get_balance_sheet</find>
-      <find>read_isin</find>
-      <find>sleep</find>
-      <find>get_message_headers</find>
-      <find>get_requesst_params</find>
       <find>add_to_mongo</find>
-      <find>formTypes</find>
-      <find>route</find>
-      <find>register_blueprint</find>
-      <find>get_last10k_balance_sheet</find>
-      <find>get_model</find>
-      <find>retrieve_mongo</find>
-      <find>isin_file_to_tickers</find>
-      <find>get_eikon_data</find>
-      <find>dataYear</find>
-      <find>get_all_eikon_data</find>
-      <find>get_daily_updates</find>
-      <find>get_betas</find>
-      <find>datetime</find>
-      <find>aMajorOwners</find>
-      <find>retrieve_fiscal_year_data</find>
-      <find>retrieve</find>
-      <find>get_major_shareholders</find>
-      <find>aLabels</find>
+      <find>model_mongodb</find>
+      <find>fundamentals</find>
+      <find>eikon-stock</find>
+      <find>retrieve_fiscal_quarter_data</find>
       <find>retrieve_estimated_fiscal_year_data</find>
+      <find>update</find>
+      <find>retrieve_fiscal_year_data</find>
+      <find>retrieve_eikon_estimates</find>
+      <find>get_minority_interest</find>
+      <find>get_all_eikon_data</find>
+      <find>eikon_to_regular_ticker</find>
+      <find>afy</find>
+      <find>get_daily_updates</find>
+      <find>estimated</find>
+      <find>estimated&quot;</find>
+      <find>all</find>
+      <find>open</find>
+      <find>isin_file_to_tickers</find>
+      <find>^</find>
+      <find>sp500</find>
+      <find>all_</find>
+      <find>add_to</find>
+      <find>EVEBIT</find>
+      <find>ek.get_data(iEikonTicker,</find>
+      <find>retrieve_eikon_reports</find>
+      <find>add_to_</find>
+      <find>quarterly</find>
+      <find>lstrip</find>
+      <find>get_major</find>
     </findStrings>
     <replaceStrings>
       <replace>get_last10k_balance_sheet</replace>
       <replace>get_eikon_data</replace>
+      <replace>&quot;</replace>
     </replaceStrings>
   </component>
   <component name="GradleLocalSettings">
@@ -136,18 +185,18 @@
         <option value="$PROJECT_DIR$/tests/conftest.py" />
         <option value="$PROJECT_DIR$/bookshelf/crud.py" />
         <option value="$PROJECT_DIR$/main.py" />
-        <option value="$PROJECT_DIR$/bookshelf/model_mongodb.py" />
         <option value="$PROJECT_DIR$/bookshelf/SP500.json" />
-        <option value="$PROJECT_DIR$/test.txt" />
         <option value="$PROJECT_DIR$/requirements.txt" />
+        <option value="$PROJECT_DIR$/test.txt" />
+        <option value="$PROJECT_DIR$/bookshelf/model_mongodb.py" />
+        <option value="$PROJECT_DIR$/eikonTickers.txt" />
         <option value="$PROJECT_DIR$/bookshelf/__init__.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="1424" />
-    <option name="y" value="35" />
-    <option name="width" value="1366" />
+  <component name="ProjectFrameBounds" extendedState="7">
+    <option name="x" value="1404" />
+    <option name="width" value="1360" />
     <option name="height" value="728" />
   </component>
   <component name="ProjectView">
@@ -173,17 +222,6 @@
               <item name="2-structured-data" type="b2602c69:ProjectViewProjectNode" />
               <item name="2-structured-data" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="2-structured-data" type="b2602c69:ProjectViewProjectNode" />
-              <item name="2-structured-data" type="462c0819:PsiDirectoryNode" />
-              <item name="bookshelf" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="2-structured-data" type="b2602c69:ProjectViewProjectNode" />
-              <item name="2-structured-data" type="462c0819:PsiDirectoryNode" />
-              <item name="bookshelf" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -200,6 +238,9 @@
     <property name="settings.editor.selected.configurable" value="preferences.editor" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\ant1_\Documents\Git Repos\getting-started-python\2-structured-data" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\ant1_\Documents\Git Repos\getting-started-python\2-structured-data\bookshelf" />
     </key>
@@ -317,7 +358,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1358" y="-8" width="1376" height="744" extended-state="6" />
+    <frame x="1358" y="-8" width="1376" height="744" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -330,6 +371,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19779412" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.340694" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Google Cloud Storage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -341,7 +383,6 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.340694" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -350,36 +391,11 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="4" />
+      <option name="time" value="7" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/bookshelf/templates/form.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="748">
-          <caret line="44" column="22" lean-forward="false" selection-start-line="44" selection-start-column="22" selection-end-line="44" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="18" column="3" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="3" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bookshelf/model_mongodb.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1003">
-          <caret line="60" column="14" lean-forward="false" selection-start-line="60" selection-start-column="14" selection-end-line="60" selection-end-column="14" />
-          <folding>
-            <element signature="e#576#610#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/conftest.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
@@ -401,11 +417,21 @@
           <folding>
             <element signature="e#576#590#0" expanded="true" />
             <element signature="e#1467#1671#0" expanded="false" />
-            <element signature="e#1715#2120#0" expanded="false" />
-            <element signature="e#2178#2333#0" expanded="false" />
-            <element signature="e#2377#2617#0" expanded="false" />
-            <element signature="e#4193#4815#0" expanded="false" />
-            <element signature="e#13418#15148#0" expanded="false" />
+            <element signature="e#1704#1879#0" expanded="false" />
+            <element signature="e#1923#2328#0" expanded="false" />
+            <element signature="e#2386#2541#0" expanded="false" />
+            <element signature="e#2585#2825#0" expanded="false" />
+            <element signature="e#2874#3079#0" expanded="false" />
+            <element signature="e#3847#4472#0" expanded="false" />
+            <element signature="e#4750#4942#0" expanded="false" />
+            <element signature="e#4983#5130#0" expanded="false" />
+            <element signature="e#5176#5428#0" expanded="false" />
+            <element signature="e#5463#6131#0" expanded="false" />
+            <element signature="e#6174#6604#0" expanded="false" />
+            <element signature="e#6651#6858#0" expanded="false" />
+            <element signature="e#6905#7238#0" expanded="false" />
+            <element signature="e#7286#9144#0" expanded="false" />
+            <element signature="e#17440#19170#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -415,7 +441,7 @@
         <state relative-caret-position="238">
           <caret line="14" column="31" lean-forward="false" selection-start-line="14" selection-start-column="22" selection-end-line="14" selection-end-column="31" />
           <folding>
-            <element signature="e#576#607#0" expanded="true" />
+            <element signature="e#576#607#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -487,11 +513,21 @@
           <folding>
             <element signature="e#576#590#0" expanded="true" />
             <element signature="e#1467#1671#0" expanded="false" />
-            <element signature="e#1715#2120#0" expanded="false" />
-            <element signature="e#2178#2333#0" expanded="false" />
-            <element signature="e#2377#2617#0" expanded="false" />
-            <element signature="e#4193#4815#0" expanded="false" />
-            <element signature="e#13418#15148#0" expanded="false" />
+            <element signature="e#1704#1879#0" expanded="false" />
+            <element signature="e#1923#2328#0" expanded="false" />
+            <element signature="e#2386#2541#0" expanded="false" />
+            <element signature="e#2585#2825#0" expanded="false" />
+            <element signature="e#2874#3079#0" expanded="false" />
+            <element signature="e#3847#4472#0" expanded="false" />
+            <element signature="e#4750#4942#0" expanded="false" />
+            <element signature="e#4983#5130#0" expanded="false" />
+            <element signature="e#5176#5428#0" expanded="false" />
+            <element signature="e#5463#6131#0" expanded="false" />
+            <element signature="e#6174#6604#0" expanded="false" />
+            <element signature="e#6651#6858#0" expanded="false" />
+            <element signature="e#6905#7238#0" expanded="false" />
+            <element signature="e#7286#9144#0" expanded="false" />
+            <element signature="e#17440#19170#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -501,7 +537,7 @@
         <state relative-caret-position="731">
           <caret line="43" column="13" lean-forward="false" selection-start-line="43" selection-start-column="13" selection-end-line="43" selection-end-column="13" />
           <folding>
-            <element signature="e#576#607#0" expanded="true" />
+            <element signature="e#576#607#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -573,11 +609,21 @@
           <folding>
             <element signature="e#576#590#0" expanded="true" />
             <element signature="e#1467#1671#0" expanded="false" />
-            <element signature="e#1715#2120#0" expanded="false" />
-            <element signature="e#2178#2333#0" expanded="false" />
-            <element signature="e#2377#2617#0" expanded="false" />
-            <element signature="e#4193#4815#0" expanded="false" />
-            <element signature="e#13418#15148#0" expanded="false" />
+            <element signature="e#1704#1879#0" expanded="false" />
+            <element signature="e#1923#2328#0" expanded="false" />
+            <element signature="e#2386#2541#0" expanded="false" />
+            <element signature="e#2585#2825#0" expanded="false" />
+            <element signature="e#2874#3079#0" expanded="false" />
+            <element signature="e#3847#4472#0" expanded="false" />
+            <element signature="e#4750#4942#0" expanded="false" />
+            <element signature="e#4983#5130#0" expanded="false" />
+            <element signature="e#5176#5428#0" expanded="false" />
+            <element signature="e#5463#6131#0" expanded="false" />
+            <element signature="e#6174#6604#0" expanded="false" />
+            <element signature="e#6651#6858#0" expanded="false" />
+            <element signature="e#6905#7238#0" expanded="false" />
+            <element signature="e#7286#9144#0" expanded="false" />
+            <element signature="e#17440#19170#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -626,13 +672,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="771">
-          <caret line="64" column="32" lean-forward="false" selection-start-line="64" selection-start-column="32" selection-end-line="64" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/conftest.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
@@ -675,59 +714,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bookshelf/SP500.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="3" lean-forward="false" selection-start-line="2" selection-start-column="3" selection-end-line="2" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bookshelf/model_mongodb.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1139">
-          <caret line="68" column="10" lean-forward="false" selection-start-line="68" selection-start-column="4" selection-end-line="68" selection-end-column="10" />
-          <folding>
-            <element signature="e#576#610#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bookshelf/crud.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="374">
           <caret line="23" column="11" lean-forward="false" selection-start-line="23" selection-start-column="11" selection-end-line="23" selection-end-column="11" />
           <folding>
-            <element signature="e#576#607#0" expanded="true" />
+            <element signature="e#576#607#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/requirements-dev.txt">
+    <entry file="file://$PROJECT_DIR$/config.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/RemoveDuplicates.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="22" column="3" lean-forward="true" selection-start-line="22" selection-start-column="3" selection-end-line="22" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/requirements.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" column="19" lean-forward="true" selection-start-line="3" selection-start-column="19" selection-end-line="3" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bookshelf/eikonIsin.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8959">
-          <caret line="527" column="0" lean-forward="false" selection-start-line="527" selection-start-column="0" selection-end-line="527" selection-end-column="0" />
+        <state relative-caret-position="572">
+          <caret line="64" column="32" lean-forward="false" selection-start-line="64" selection-start-column="32" selection-end-line="64" selection-end-column="32" />
           <folding />
         </state>
       </provider>
@@ -740,26 +740,110 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/RemoveDuplicates.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="3" lean-forward="false" selection-start-line="0" selection-start-column="3" selection-end-line="0" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/env/tcl/tk8.6/demos/tcolor">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="312" column="45" lean-forward="false" selection-start-line="312" selection-start-column="45" selection-end-line="312" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bookshelf/model_mongodb.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="299">
+          <caret line="69" column="27" lean-forward="false" selection-start-line="69" selection-start-column="27" selection-end-line="69" selection-end-column="27" />
+          <folding>
+            <element signature="e#576#610#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/requirements-dev.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/requirements.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="19" lean-forward="true" selection-start-line="3" selection-start-column="19" selection-end-line="3" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bookshelf/SP500.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="3" lean-forward="false" selection-start-line="2" selection-start-column="3" selection-end-line="2" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bookshelf/eikonIsin.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="284">
+          <caret line="418" column="12" lean-forward="true" selection-start-line="418" selection-start-column="12" selection-end-line="418" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/test.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="24" column="3" lean-forward="false" selection-start-line="24" selection-start-column="3" selection-end-line="24" selection-end-column="3" />
+        <state relative-caret-position="68">
+          <caret line="22" column="3" lean-forward="true" selection-start-line="22" selection-start-column="3" selection-end-line="22" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eikonTickersOriginal.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eikonTickers.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="25" column="2" lean-forward="true" selection-start-line="25" selection-start-column="2" selection-end-line="25" selection-end-column="2" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bookshelf/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="319" column="15" lean-forward="false" selection-start-line="319" selection-start-column="4" selection-end-line="319" selection-end-column="15" />
+        <state relative-caret-position="359">
+          <caret line="313" column="40" lean-forward="true" selection-start-line="313" selection-start-column="23" selection-end-line="313" selection-end-column="40" />
           <folding>
             <element signature="e#576#590#0" expanded="true" />
             <element signature="e#1467#1671#0" expanded="false" />
-            <element signature="e#1715#2120#0" expanded="false" />
-            <element signature="e#2178#2333#0" expanded="false" />
-            <element signature="e#2377#2617#0" expanded="false" />
-            <element signature="e#4193#4815#0" expanded="false" />
-            <element signature="e#13418#15148#0" expanded="false" />
+            <element signature="e#1704#1879#0" expanded="false" />
+            <element signature="e#1923#2328#0" expanded="false" />
+            <element signature="e#2386#2541#0" expanded="false" />
+            <element signature="e#2585#2825#0" expanded="false" />
+            <element signature="e#2874#3079#0" expanded="false" />
+            <element signature="e#3847#4472#0" expanded="false" />
+            <element signature="e#4750#4942#0" expanded="false" />
+            <element signature="e#4983#5130#0" expanded="false" />
+            <element signature="e#5176#5428#0" expanded="false" />
+            <element signature="e#5463#6131#0" expanded="false" />
+            <element signature="e#6174#6604#0" expanded="false" />
+            <element signature="e#6651#6858#0" expanded="false" />
+            <element signature="e#6905#7238#0" expanded="false" />
+            <element signature="e#7286#9144#0" expanded="false" />
+            <element signature="e#17440#19170#0" expanded="false" />
           </folding>
         </state>
       </provider>
