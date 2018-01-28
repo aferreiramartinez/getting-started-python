@@ -64,6 +64,9 @@ def read(id):
     return from_mongo(result)
 # [END read]
 
+def read(id):
+    result = mongo.db.eikon.find_one({}(id))
+    return from_mongo(result)
 
 # [START create]
 def create(data):

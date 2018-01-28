@@ -29,6 +29,12 @@ ek.set_app_id('9FB32FA719C8F1EE8CDEF1A')
 #pd.set_option('display.max_columns', 10000)
 pd.options.display.max_colwidth = 10000
 
+def FloatOrZero(value):
+    try:
+        return float(value)
+    except:
+        return 0.0
+
 def retrieve_sp_500_tickers():
     # load json with S&P 500 companies#
     data = json.load(open('./bookshelf/SP500.json','r'))
@@ -140,8 +146,8 @@ def get_common_name(iEikonTicker):
 def get_52_week_high_low(iEikonTicker):
     a52WHighLowJson={}
     df = ek.get_data(iEikonTicker, ['TR.Price52WeekHigh','TR.Price52WeekLow'], raw_output=True)
-    a52WHighLowJson["Price52WeekHigh"]=df['data'][0][1]
-    a52WHighLowJson["Price52WeekLow"]=df['data'][0][2]
+    a52WHighLowJson["Price52WeekHigh"]=FloatOrZero(df['data'][0][1])
+    a52WHighLowJson["Price52WeekLow"]=FloatOrZero(df['data'][0][2])
     return a52WHighLowJson
 
 def get_betas(iEikonTicker):
@@ -163,7 +169,7 @@ def get_betas(iEikonTicker):
                       'TR.BetaWklyDown2Y'],
                      raw_output=True)
     for betas in aLabels:
-        aBetasJson[betas]=df['data'][0][aStartIndex]
+        aBetasJson[betas]=FloatOrZero(df['data'][0][aStartIndex])
         aStartIndex+=1
     return aBetasJson
 
@@ -177,7 +183,7 @@ def get_daily_updates(iEikonTicker):
              'aDailyVolume']
     df = ek.get_data(iEikonTicker, ['TR.CompanyMarketCap','TR.EV','CF_LAST','TR.Volume'], raw_output=True)
     for data in aLabels:
-        aBetasJson["DailyUpdated"][data] = df['data'][0][aStartIndex]
+        aBetasJson["DailyUpdated"][data] = FloatOrZero(df['data'][0][aStartIndex])
         aStartIndex+=1
     return aBetasJson
 
@@ -185,7 +191,7 @@ def get_minority_interest(iEikonTicker):
     print("min interest")
     aMinInterest={}
     df = ek.get_data(iEikonTicker, 'TR.MinorityInterestNonRedeemable', raw_output=True)
-    aMinInterest["MinorityInterest"]=df['data'][0][1]
+    aMinInterest["MinorityInterest"]=FloatOrZero(df['data'][0][1])
     return aMinInterest
 
 def get_fiscal_year_dates(iEikonTicker):
@@ -211,7 +217,12 @@ def get_major_shareholders(iEikonTicker):
     page = requests.get('http://money.cnn.com/quote/shareholders/shareholders.html?symb='+str(iSimplifiedTicker)+'&subView=institutional')
     #Todo sleep to give time to requests.get to come back
     #time.sleep(0.5)
-    tree = html.document_fromstring(page.content)
+    try:
+        tree = html.document_fromstring(page.content)
+    except:
+        print("caught exception try again")
+        page = requests.get('http://money.cnn.com/quote/shareholders/shareholders.html?symb='+str(iSimplifiedTicker)+'&subView=institutional')
+        tree = html.document_fromstring(page.content)
     for x in range (1,11):
         aPercDict1={}
         aPercDict2={}
@@ -224,13 +235,13 @@ def get_major_shareholders(iEikonTicker):
 
             #Top Owners names and percentages, names cant have ., or db crashes
             aTopOwnerName=aTopOwner[0].attrib.get('title').replace(".","")
-            aTopOwnerPerc=aTopOwnerPerc[0].text_content()
+            aTopOwnerPerc=FloatOrZero(aTopOwnerPerc[0].text_content().replace("%",""))
             aPercDict1["Percentage"]=aTopOwnerPerc
             aTopOwnersDict[aTopOwnerName]=aPercDict1
 
             #Top Funds names and percentages
             aTopaFundName=aFund[0].attrib.get('title').replace(".","")
-            aTopFundPerc=aFundPerc[0].text_content()
+            aTopFundPerc=FloatOrZero(aFundPerc[0].text_content().replace("%",""))
             aPercDict2["Percentage"]=aTopFundPerc
             aTopFundsDict[aTopaFundName]=aPercDict2
 
@@ -240,59 +251,65 @@ def get_major_shareholders(iEikonTicker):
 
 
 def get_all_eikon_data(aMongoDBModel,iEikonTickers):
+    aEikonExeptList=[]
     aEikonAllData={}
     for aEikonTicker in iEikonTickers:
-        print(aEikonTicker)
+        try:
+            print(aEikonTicker)
 
-        #Tickers
-        aEikonAllData["EikonTicker"]=aEikonTicker
-        aEikonAllData["Ticker"]=eikon_to_regular_ticker(aEikonTicker)
+            #Tickers
+            aEikonAllData["EikonTicker"]=aEikonTicker
+            aEikonAllData["Ticker"]=eikon_to_regular_ticker(aEikonTicker)
 
-        #Company name
-        aCompanyName = get_common_name(aEikonTicker)
-        aEikonAllData.update(aCompanyName)
+            #Company name
+            aCompanyName = get_common_name(aEikonTicker)
+            aEikonAllData.update(aCompanyName)
 
-        #Company description
-        aBusinessSummary = get_business_summary(aEikonTicker)
-        aEikonAllData.update(aBusinessSummary)
+            #Company description
+            aBusinessSummary = get_business_summary(aEikonTicker)
+            aEikonAllData.update(aBusinessSummary)
 
-        #52 week high/low prices
-        a52WeekHighLow = get_52_week_high_low(aEikonTicker)
-        aEikonAllData.update(a52WeekHighLow)
+            #52 week high/low prices
+            a52WeekHighLow = get_52_week_high_low(aEikonTicker)
+            aEikonAllData.update(a52WeekHighLow)
 
-        #Beta info
-        aListBetas=get_betas(aEikonTicker)
-        aEikonAllData.update(aListBetas)
+            #Beta info
+            aListBetas=get_betas(aEikonTicker)
+            aEikonAllData.update(aListBetas)
 
-        #Daily price, volume, EV, market cap
-        aListDailyUpdates=get_daily_updates(aEikonTicker)
-        aEikonAllData.update(aListDailyUpdates)
+            #Daily price, volume, EV, market cap
+            aListDailyUpdates=get_daily_updates(aEikonTicker)
+            aEikonAllData.update(aListDailyUpdates)
 
-        #Minority Interest
-        aMinInterest=get_minority_interest(aEikonTicker)
-        aEikonAllData.update(aMinInterest)
+            #Minority Interest
+            #aMinInterest=get_minority_interest(aEikonTicker)
+            #aEikonAllData.update(aMinInterest)
 
-        #Major shareholders from CNN
-        aMajorOwners=get_major_shareholders(aEikonTicker)
-        aEikonAllData.update(aMajorOwners[0])
-        aEikonAllData.update(aMajorOwners[1])
+            #Major shareholders from CNN
+            aMajorOwners=get_major_shareholders(aEikonTicker)
+            aEikonAllData.update(aMajorOwners[0])
+            aEikonAllData.update(aMajorOwners[1])
 
-        #Fiscal Year end date
-        aFiscalYearEndDate=get_fiscal_year_dates(aEikonTicker)
-        aEikonAllData.update(aFiscalYearEndDate)
+            #Fiscal Year end date
+            aFiscalYearEndDate=get_fiscal_year_dates(aEikonTicker)
+            aEikonAllData.update(aFiscalYearEndDate)
 
-        #Fiscal year data
-        aFiscalYearData=retrieve_fiscal_year_data(aEikonTicker)
-        aFiscalYearEstimatesData=retrieve_estimated_fiscal_year_data(aEikonTicker)
-        aEikonAllData["DataByFiscalYear"]=aFiscalYearData
-        aEikonAllData["DataByFiscalYear"].update(aFiscalYearEstimatesData)
+            #Fiscal year data
+            aFiscalYearData=retrieve_fiscal_year_data(aEikonTicker)
+            aFiscalYearEstimatesData=retrieve_estimated_fiscal_year_data(aEikonTicker)
+            aEikonAllData["DataByFiscalYear"]=aFiscalYearData
+            aEikonAllData["DataByFiscalYear"].update(aFiscalYearEstimatesData)
 
-        #Fiscal quarter data
-        aFiscalQuarterData=retrieve_fiscal_quarter_data(aEikonTicker)
-        aEikonAllData["DataByFiscalQuarter"]=(aFiscalQuarterData)
+            #Fiscal quarter data
+            aFiscalQuarterData=retrieve_fiscal_quarter_data(aEikonTicker)
+            aEikonAllData["DataByFiscalQuarter"]=(aFiscalQuarterData)
 
-        add_to_mongo(aMongoDBModel,aEikonAllData)
-        aEikonAllData.clear()
+            add_to_mongo(aMongoDBModel,aEikonAllData)
+            aEikonAllData.clear()
+        except:
+            aEikonExeptList.append(aEikonTicker)
+            continue
+        print(aEikonExeptList)
 
 
 def retrieve_eikon_reports(iEikonTicker, iPeriod):
@@ -329,7 +346,7 @@ def retrieve_eikon_reports(iEikonTicker, iPeriod):
 
 def retrieve_fiscal_year_data(iEikonTicker):
     print("retrieve_fiscal_year_data")
-    aFiscalYears=['FY0','FY-1','FY-2']
+    aFiscalYears=['FY-2','FY-1','FY0']
     aFYDataDict={}
     oListJson={}
     aFYDataDict["Estimated"]="false"
@@ -347,7 +364,7 @@ def retrieve_fiscal_year_data(iEikonTicker):
         aDfLen=len(df['data'][0])-1
         aFYJson={"FY"+str(aFY0):{}}
         for idx in range(0,aDfLen):
-            aFYDataDict[aLabels[idx]]=df['data'][0][idx+1]
+            aFYDataDict[aLabels[idx]]=FloatOrZero(df['data'][0][idx+1])
         aFYJson["FY"+str(aFY0)]=aFYDataDict
         oListJson.update(copy.deepcopy(aFYJson))
         aFY0=aFY0+1
@@ -408,7 +425,7 @@ def retrieve_estimated_fiscal_year_data(iEikonTicker):
         aDfLen=len(df['data'][0])-1
         aFYJson={"FY"+str(aFY1):{}}
         for idx in range(0,aDfLen):
-            aFYDataDict[aLabels[idx]]=df['data'][0][idx+1]
+            aFYDataDict[aLabels[idx]]=FloatOrZero(df['data'][0][idx+1])
         aFYJson["FY"+str(aFY1)]=aFYDataDict
         oListJson.update(copy.deepcopy(aFYJson))
         #print(oListJson)
@@ -421,28 +438,25 @@ def retrieve_fiscal_quarter_data(iEikonTicker):
     aFQDataDict={}
     oListJson={}
     for fq in aFiscalQuarters:
-        print("quarter "+fq)
         aFQDataDict.clear()
         if fq in aFiscalQuarters[0:4]:
             aFQDataDict["Estimated"]="false"
-            print("retrieve period")
             aPeriod = ek.get_data(iEikonTicker,'TR.EBITActValue(Period='+fq+').fperiod',raw_output=True)
             aQuarter=aPeriod['data'][0][1]
-            print("retrieve reports")
             aLabels,df = retrieve_eikon_reports(iEikonTicker, fq)
             print("retrieve complete")
         else:
             aFQDataDict["Estimated"]="true"
-            print("retrieve period")
             aPeriod = ek.get_data(iEikonTicker,'TR.EpsSmartEst(Period='+fq+').fperiod',raw_output=True)
             aQuarter=aPeriod['data'][0][1]
-            print("retrieve reports")
             aLabels,df = retrieve_eikon_estimates(iEikonTicker, fq)
             print("retrieve complete")
+
+        #First elem of df is always the company name, we dont need it for len
         aDfLen=len(df['data'][0])-1
         aFYJson={str(aQuarter):{}}
         for idx in range(0,aDfLen):
-            aFQDataDict[aLabels[idx]]=df['data'][0][idx+1]
+            aFQDataDict[aLabels[idx]]=FloatOrZero(df['data'][0][idx+1])
         aFYJson[str(aQuarter)]=aFQDataDict
         oListJson.update(copy.deepcopy(aFYJson))
         time.sleep(1)

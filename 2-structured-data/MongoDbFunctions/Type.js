@@ -1,0 +1,1 @@
+db.eikon.find({ "CompanyName": { "$type": 1 }});  
