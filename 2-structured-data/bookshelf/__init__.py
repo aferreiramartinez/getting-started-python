@@ -88,49 +88,6 @@ def eikon_to_regular_ticker(iEikonTicker):
     print("regular ticker"+regularTicker)
     return regularTicker
 
-#def isin_file_to_tickers_file():
-#    eikonTickers = []
-#    regularTickers = []
-#    with open("bookshelf/eikonIsin.txt") as file:
-#        f = open('eikonTickers.txt','w')
-#        for line in file:
-#            time.sleep(0.1)
-#            line = line.replace('\n','')
-#            ticker = ek.get_symbology(line,from_symbol_type='ISIN', to_symbol_type="RIC",raw_output=True)
-#            mappedSymb=ticker.get('mappedSymbols')
-#            firstmappedSymb=mappedSymb[0]
-#            (key, value), = firstmappedSymb.get('bestMatch').items()
-#            if (key != 'error') and ("^" not in str(value)):
-#                f.write(value+'\n')
-#            else:
-#                continue
-#        f.close()
-#    return eikonTickers
-
-def isin_file_to_tickers():
-    eikonTickers = []
-    regularTickers = []
-    with open("bookshelf/eikonIsin.txt") as file:
-        for line in file:
-            time.sleep(0.1)
-            line = line.replace('\n','')
-            ticker = ek.get_symbology(line,from_symbol_type='ISIN', to_symbol_type="RIC",raw_output=True)
-            mappedSymb=ticker.get('mappedSymbols')
-            firstmappedSymb=mappedSymb[0]
-            (key, value), = firstmappedSymb.get('bestMatch').items()
-            if (key != 'error') and ("^" not in str(value)):
-                eikonTickers.append(value)
-            else:
-                continue
-    return eikonTickers
-
-#def get_eikon_data():
-#    tickers = isin_file_to_tickers()
-#    thefile = open('eikonTickers.txt', 'w')
-#    for item in tickers:
-#        regularTicker=item.split('.', 1)[0]
-#        regularTicker=regularTicker.split('^', 1)[0]
-
 def get_business_summary(iEikonTicker):
     aBusinessSummaryJson={}
     aStartIndex=1

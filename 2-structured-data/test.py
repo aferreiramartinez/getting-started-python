@@ -9,7 +9,7 @@ from flask import current_app, Flask, redirect, url_for
 ek.set_app_id('9FB32FA719C8F1EE8CDEF1A')
 pd.options.display.max_colwidth = 10000
 
-if __name__ == '__main2__':
+if __name__ == '__main__':
     get_minority_interest("AAPL.O")
 def get_minority_interest(iEikonTicker):
     print("min interest")
