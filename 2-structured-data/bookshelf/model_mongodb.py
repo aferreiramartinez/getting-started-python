@@ -37,7 +37,7 @@ def from_mongo(data):
     if not data:
         return None
 
-    data['id'] = str(data['_id'])
+    #data['id'] = str(data['_id'])
     return data
 # [END from_mongo]
 
@@ -64,9 +64,13 @@ def read(id):
     return from_mongo(result)
 # [END read]
 
-def read(id):
-    result = mongo.db.eikon.find_one({}(id))
+def read_by_ticker(iEikonTicker):
+    result = mongo.db.eikon.find_one({ "EikonTicker": iEikonTicker })
     return from_mongo(result)
+
+def read_all():
+    cursor = mongo.db.eikon.find({})
+    return from_mongo(cursor)
 
 # [START create]
 def create(data):
@@ -77,7 +81,7 @@ def create(data):
 
 # [START update]
 def update(data, id):
-    mongo.db.books.update({'_id': _id(id)}, data)
+    mongo.db.eikon.update({'_id': _id(id)}, data)
     return read(id)
 # [END update]
 

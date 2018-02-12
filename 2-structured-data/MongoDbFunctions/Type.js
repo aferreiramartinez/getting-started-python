@@ -1,1 +1,1 @@
-db.eikon.find({ "CompanyName": { "$type": 1 }});  
+db.eikon.find({ "CompanyName": { "$type": 1 }});db.getCollection('eikon').find({ "Ticker": "ALL" });  //Retrieve cursor to all tickersdb.getCollection('eikon').find({}, { EikonTicker: 1, _id: 0} )

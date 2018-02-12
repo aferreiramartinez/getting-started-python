@@ -14,7 +14,7 @@
 
 import logging
 from lxml import html
-import http.client, urllib.request, urllib.parse, urllib.error, base64, json, time, datetime, math, requests, calendar,copy
+import http.client, urllib.request, urllib.parse, urllib.error, base64, json, time, datetime, math, requests, calendar,copy, sys
 import eikon as ek
 import pandas as pd
 from pprint import pprint
@@ -45,7 +45,7 @@ def retrieve_sp_500_tickers():
 
 def retrieve_eikon_file():
     # load json with S&P 500 companies#
-    with open('./eikonTickers.txt','r') as f:
+    with open('./Tickers/NYSE.txt','r') as f:
         tickers = f.readlines()
     tickers = [x.strip() for x in tickers]
     return tickers
@@ -133,8 +133,28 @@ def isin_file_to_tickers():
 
 def get_business_summary(iEikonTicker):
     aBusinessSummaryJson={}
-    df = ek.get_data(iEikonTicker, 'TR.BusinessSummary',raw_output=True)
-    aBusinessSummaryJson["CompanyDescription"]=df['data'][0][1]
+    aStartIndex=1
+    aLabels=['CompanyDescription',
+             'HQCountryCode',
+             'GICSSector',
+             'GICSIndustryGroup',
+             'GICSIndustry',
+             'GICSSubIndustry',
+             'BusinessSectorScheme',
+             'BusinessSector']
+    df = ek.get_data(iEikonTicker,
+                     ['TR.BusinessSummary',
+                      'TR.HQCountryCode',
+                      'TR.GICSSector',
+                      'TR.GICSIndustryGroup',
+                      'TR.GICSIndustry',
+                      'TR.GICSSubIndustry',
+                      'TR.BusinessSectorScheme',
+                      'TR.BusinessSector'],
+                     raw_output=True)
+    for business in aLabels:
+        aBusinessSummaryJson[business]=df['data'][0][aStartIndex]
+        aStartIndex+=1
     return aBusinessSummaryJson
 
 def get_common_name(iEikonTicker):
@@ -173,9 +193,15 @@ def get_betas(iEikonTicker):
         aStartIndex+=1
     return aBetasJson
 
+def get_30_day_volume(iEikonTicker):
+    aAccumulatedVol = 0
+    volumes=ek.get_data(iEikonTicker, 'TR.ACCUMULATEDVOLUME(SDate=0,EDate=-29,Frq=D)',raw_output=True)
+    for vol in volumes['data']:
+        aAccumulatedVol += FloatOrZero(vol[1])
+    return aAccumulatedVol
+
 def get_daily_updates(iEikonTicker):
-    print("daily updates")
-    aBetasJson={"DailyUpdated":{}}
+    aDailyJson={"DailyUpdated":{}}
     aStartIndex=1
     aLabels=['CompanyMarketCap',
              'EV',
@@ -183,9 +209,10 @@ def get_daily_updates(iEikonTicker):
              'aDailyVolume']
     df = ek.get_data(iEikonTicker, ['TR.CompanyMarketCap','TR.EV','CF_LAST','TR.Volume'], raw_output=True)
     for data in aLabels:
-        aBetasJson["DailyUpdated"][data] = FloatOrZero(df['data'][0][aStartIndex])
+        aDailyJson["DailyUpdated"][data] = FloatOrZero(df['data'][0][aStartIndex])
         aStartIndex+=1
-    return aBetasJson
+    aDailyJson["DailyUpdated"]["30DayVolume"]=get_30_day_volume(iEikonTicker)
+    return aDailyJson
 
 def get_minority_interest(iEikonTicker):
     print("min interest")
@@ -306,11 +333,13 @@ def get_all_eikon_data(aMongoDBModel,iEikonTickers):
 
             add_to_mongo(aMongoDBModel,aEikonAllData)
             aEikonAllData.clear()
+            print(aEikonExeptList)
+        except KeyboardInterrupt:
+            sys.exit(0)
         except:
             aEikonExeptList.append(aEikonTicker)
+            print(aEikonExeptList)
             continue
-        print(aEikonExeptList)
-
 
 def retrieve_eikon_reports(iEikonTicker, iPeriod):
     aLabels=['EBITDA',
@@ -524,9 +553,26 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     with app.app_context():
         model = get_model()
         model.init_app(app)
+        #Free last10k info
         #get_last10k_balance_sheet(model,'10-K','0')
+
+        #Eikon all tickers
         aEikonTickers=retrieve_eikon_file()
         get_all_eikon_data(model,aEikonTickers)
+        #wrongTickers=[]
+        #for aTicker in aEikonTickers:
+        #    try:
+        #        print(aTicker)
+        #        update_eikon_ticker_mongo(model, get_daily_updates, aTicker)
+        #        update_eikon_ticker_mongo(model, get_business_summary, aTicker)
+        #    except:
+        #        wrongTickers.append(aTicker)
+        #        print(wrongTickers)
+        #        continue
+        #print(wrongTickers)
+        #get_daily_updates('AAPL.O')
+        #get_business_summary('AAPL.O')
+
 
     # Register the Bookshelf CRUD blueprint.
     from .crud import crud
@@ -550,9 +596,6 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         An internal error occurred: <pre>{}</pre>
         See logs for full stacktrace.
         """.format(e), 500
-
-
-
     return app
 
 
@@ -574,3 +617,13 @@ def add_to_mongo(iModel,iData):
     from . import model_mongodb
     iModel.create(iData)
     print("added to mongo")
+
+def update_eikon_ticker_mongo(iModel, iEikonFunction, iEikonTicker):
+    from . import model_mongodb
+    data = iModel.read_by_ticker(iEikonTicker)
+    id = data['_id']
+    updatedData=iEikonFunction(iEikonTicker)
+    data.update(updatedData)
+    iModel.update(data,str(id))
+    return data
+
