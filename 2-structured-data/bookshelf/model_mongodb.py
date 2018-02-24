@@ -60,28 +60,28 @@ def list(limit=10, cursor=None):
 
 # [START read]
 def read(id):
-    result = mongo.db.eikon.find_one(_id(id))
+    result = mongo.db.eikonTwo.find_one(_id(id))
     return from_mongo(result)
 # [END read]
 
 def read_by_ticker(iEikonTicker):
-    result = mongo.db.eikon.find_one({ "EikonTicker": iEikonTicker })
+    result = mongo.db.eikonTwo.find_one({ "EikonTicker": iEikonTicker })
     return from_mongo(result)
 
 def read_all():
-    cursor = mongo.db.eikon.find({})
+    cursor = mongo.db.eikonTwo.find({})
     return from_mongo(cursor)
 
 # [START create]
 def create(data):
-    new_id = mongo.db.eikon.insert(data)
+    new_id = mongo.db.eikonTwo.insert(data)
     return read(new_id)
 # [END create]
 
 
 # [START update]
 def update(data, id):
-    mongo.db.eikon.update({'_id': _id(id)}, data)
+    mongo.db.eikonTwo.update({'_id': _id(id)}, data)
     return read(id)
 # [END update]
 

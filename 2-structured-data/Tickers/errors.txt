@@ -1,0 +1,1 @@
+'AJG.N', 'STX.OQ', 'SYK.N', 'EXPD.OQ', 'PFG.OQ', 'JPM.N', 'OXY.N', 'VLO.N', 'LH.N', 'DRI.N', 'LUK.N', 'BXP.N', 'GE.N', 'NUE.N', 'MGM.N', 'MLM.N', 'MON.N', 'RF.N', 'KIM.N', 'GWW.N', 'C.N', 'IFF.N', 'STT.N', 'PNC.N', 'FITB.OQ', 'MPC.N', 'EXR.N', 'TSS.N', 'CI.N'

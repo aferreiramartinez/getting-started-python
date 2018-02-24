@@ -31,21 +31,16 @@ pd.options.display.max_colwidth = 10000
 
 def FloatOrZero(value):
     try:
-        return float(value)
+        if math.isnan(value):
+            return 0.0
+        else:
+            return float(value)
     except:
         return 0.0
 
-def retrieve_sp_500_tickers():
+def retrieve_eikon_file(iFileName):
     # load json with S&P 500 companies#
-    data = json.load(open('./bookshelf/SP500.json','r'))
-    tickers = []
-    for company in data["SP500"]:
-        tickers.append(company["Ticker"])
-    return tickers
-
-def retrieve_eikon_file():
-    # load json with S&P 500 companies#
-    with open('./Tickers/NYSE.txt','r') as f:
+    with open('./Tickers/'+iFileName,'r') as f:
         tickers = f.readlines()
     tickers = [x.strip() for x in tickers]
     return tickers
@@ -98,7 +93,10 @@ def get_business_summary(iEikonTicker):
              'GICSIndustry',
              'GICSSubIndustry',
              'BusinessSectorScheme',
-             'BusinessSector']
+             'BusinessSector',
+             'TradedInIdentifier',
+             'MemberIndexRic',
+             'PriceMainIndexRIC']
     df = ek.get_data(iEikonTicker,
                      ['TR.BusinessSummary',
                       'TR.HQCountryCode',
@@ -107,7 +105,10 @@ def get_business_summary(iEikonTicker):
                       'TR.GICSIndustry',
                       'TR.GICSSubIndustry',
                       'TR.BusinessSectorScheme',
-                      'TR.BusinessSector'],
+                      'TR.BusinessSector',
+                      'CF_EXCHNG',
+                      'TR.MemberIndexRic',
+                      'TR.PriceMainIndexRIC'],
                      raw_output=True)
     for business in aLabels:
         aBusinessSummaryJson[business]=df['data'][0][aStartIndex]
@@ -129,7 +130,7 @@ def get_52_week_high_low(iEikonTicker):
 
 def get_betas(iEikonTicker):
     print("betas")
-    aBetasJson={}
+    aBetasJson={"Betas":{}}
     aStartIndex=1
     aLabels=['BetaWkly3Y',
              'BetaWklyUp3Y',
@@ -146,7 +147,7 @@ def get_betas(iEikonTicker):
                       'TR.BetaWklyDown2Y'],
                      raw_output=True)
     for betas in aLabels:
-        aBetasJson[betas]=FloatOrZero(df['data'][0][aStartIndex])
+        aBetasJson["Betas"][betas]=FloatOrZero(df['data'][0][aStartIndex])
         aStartIndex+=1
     return aBetasJson
 
@@ -157,8 +158,37 @@ def get_30_day_volume(iEikonTicker):
         aAccumulatedVol += FloatOrZero(vol[1])
     return aAccumulatedVol
 
+def get_365_day_share_price(iEikonTicker):
+    print("365 daily price")
+    o365DayPrice={"180DaySharePrice":{}}
+    aJson={}
+    initCounter=0
+    aPrices=ek.get_data(iEikonTicker, ['TR.PriceClose(SDate=0,EDate=-364,Frq=D)',
+                                       'TR.PriceHigh(SDate=0,EDate=-364,Frq=D)',
+                                       'TR.PriceLow(SDate=0,EDate=-364,Frq=D)'],raw_output=True)
+    for aPrice in aPrices['data']:
+        aJson["PriceClose"]=FloatOrZero(aPrice[1])
+        aJson["PriceHigh"]=FloatOrZero(aPrice[2])
+        aJson["PriceLow"]=FloatOrZero(aPrice[3])
+        o365DayPrice["180DaySharePrice"]["D-"+str(initCounter)]=copy.deepcopy(aJson)
+        initCounter +=1
+    return o365DayPrice
+
+def get_120_month_share_price(iEikonTicker):
+    print("monthly updates")
+    o120MonthPrice={"120MonthSharePrice":{}}
+    aJson={}
+    initCounter=0
+    aPrices=ek.get_data(iEikonTicker,'TR.PriceClose(SDate=0,EDate=-119,Frq=CM)',raw_output=True)
+
+    for aPrice in aPrices['data']:
+        aJson["PriceClose"]=FloatOrZero(aPrice[1])
+        o120MonthPrice["120MonthSharePrice"]["M-"+str(initCounter)]=copy.deepcopy(aJson)
+        initCounter +=1
+    return o120MonthPrice
+
 def get_daily_updates(iEikonTicker):
-    aDailyJson={"DailyUpdated":{}}
+    oDailyJson={"DailyUpdated":{}}
     aStartIndex=1
     aLabels=['CompanyMarketCap',
              'EV',
@@ -166,10 +196,23 @@ def get_daily_updates(iEikonTicker):
              'aDailyVolume']
     df = ek.get_data(iEikonTicker, ['TR.CompanyMarketCap','TR.EV','CF_LAST','TR.Volume'], raw_output=True)
     for data in aLabels:
-        aDailyJson["DailyUpdated"][data] = FloatOrZero(df['data'][0][aStartIndex])
+        oDailyJson["DailyUpdated"][data] = FloatOrZero(df['data'][0][aStartIndex])
         aStartIndex+=1
-    aDailyJson["DailyUpdated"]["30DayVolume"]=get_30_day_volume(iEikonTicker)
-    return aDailyJson
+    oDailyJson["DailyUpdated"]["30DayVolume"]=get_30_day_volume(iEikonTicker)
+    return oDailyJson
+
+def get_competitors(iEikonTicker):
+    print("competitors")
+    aIndex=1
+    oDailyJson={"Competitors":{}}
+    aJson={}
+    screener_exp = "SCREEN(U(IN(Peers('IBM.N'))))"
+    peers = ek.get_data(instruments=[screener_exp], fields=['TR.CompanyName'],raw_output=True)
+    for company in peers["data"]:
+        aJson["name"]=company[1]
+        oDailyJson["Competitors"]["Competitor-"+str(aIndex)]=copy.deepcopy(aJson)
+        aIndex += 1
+    return oDailyJson
 
 def get_minority_interest(iEikonTicker):
     print("min interest")
@@ -188,7 +231,7 @@ def get_fiscal_year_dates(iEikonTicker):
     aFY["FYEndDate"]=(aMonthDay+'-'+aMonthName)
     return aFY
 
-def get_major_shareholders(iEikonTicker):
+def get_major_shareholders_cnn(iEikonTicker):
     print("major shareholders")
     #Init dictionaries
     aMajorOwners={"Top-10-Owners":{}}
@@ -233,6 +276,22 @@ def get_major_shareholders(iEikonTicker):
     aMajorFunds["Top-10-Mutual-Funds"]=aTopFundsDict
     return [aMajorOwners,aMajorFunds]
 
+def get_major_shareholders(iEikonTicker):
+    maxShareholders = 10
+    oMajorOwners = {"Top-10-Owners":{}}
+    aJson={}
+    aHolders = ek.get_data(instruments=['AAPL.O'], fields=['TR.InvestorFullName',
+                                                           'TR.SharesHeld',
+                                                           'TR.PctOfSharesOutHeld'],raw_output=True)
+    for aHolder in aHolders["data"]:
+        if maxShareholders >= 0:
+            maxShareholders -= 1
+            aJson["Percentage"]=FloatOrZero(aHolder[3])
+            aJson["SharesOutstandingHeld"]=FloatOrZero(aHolder[2])
+            oMajorOwners["Top-10-Owners"][aHolder[1].replace(".","")]=copy.deepcopy(aJson)
+        else:
+            break
+    return oMajorOwners
 
 def get_all_eikon_data(aMongoDBModel,iEikonTickers):
     aEikonExeptList=[]
@@ -253,6 +312,10 @@ def get_all_eikon_data(aMongoDBModel,iEikonTickers):
             aBusinessSummary = get_business_summary(aEikonTicker)
             aEikonAllData.update(aBusinessSummary)
 
+            #Competitors
+            aCompetitors = get_competitors(aEikonTicker)
+            aEikonAllData.update(aCompetitors)
+
             #52 week high/low prices
             a52WeekHighLow = get_52_week_high_low(aEikonTicker)
             aEikonAllData.update(a52WeekHighLow)
@@ -260,6 +323,14 @@ def get_all_eikon_data(aMongoDBModel,iEikonTickers):
             #Beta info
             aListBetas=get_betas(aEikonTicker)
             aEikonAllData.update(aListBetas)
+
+            #Monthly share price updates
+            aListMonthlyUpdates=get_120_month_share_price(aEikonTicker)
+            aEikonAllData.update(aListMonthlyUpdates)
+
+            # Historic daily price for past year
+            aListHistoricDailyPrices=get_365_day_share_price(aEikonTicker)
+            aEikonAllData.update(aListHistoricDailyPrices)
 
             #Daily price, volume, EV, market cap
             aListDailyUpdates=get_daily_updates(aEikonTicker)
@@ -270,9 +341,13 @@ def get_all_eikon_data(aMongoDBModel,iEikonTickers):
             #aEikonAllData.update(aMinInterest)
 
             #Major shareholders from CNN
+            #aMajorOwners=get_major_shareholders_cnn(aEikonTicker)
+            #aEikonAllData.update(aMajorOwners[0])
+            #aEikonAllData.update(aMajorOwners[1])
+
+            #Major shareholders
             aMajorOwners=get_major_shareholders(aEikonTicker)
-            aEikonAllData.update(aMajorOwners[0])
-            aEikonAllData.update(aMajorOwners[1])
+            aEikonAllData.update(aMajorOwners)
 
             #Fiscal Year end date
             aFiscalYearEndDate=get_fiscal_year_dates(aEikonTicker)
@@ -430,14 +505,11 @@ def retrieve_fiscal_quarter_data(iEikonTicker):
             aPeriod = ek.get_data(iEikonTicker,'TR.EBITActValue(Period='+fq+').fperiod',raw_output=True)
             aQuarter=aPeriod['data'][0][1]
             aLabels,df = retrieve_eikon_reports(iEikonTicker, fq)
-            print("retrieve complete")
         else:
             aFQDataDict["Estimated"]="true"
             aPeriod = ek.get_data(iEikonTicker,'TR.EpsSmartEst(Period='+fq+').fperiod',raw_output=True)
             aQuarter=aPeriod['data'][0][1]
             aLabels,df = retrieve_eikon_estimates(iEikonTicker, fq)
-            print("retrieve complete")
-
         #First elem of df is always the company name, we dont need it for len
         aDfLen=len(df['data'][0])-1
         aFYJson={str(aQuarter):{}}
@@ -445,7 +517,6 @@ def retrieve_fiscal_quarter_data(iEikonTicker):
             aFQDataDict[aLabels[idx]]=FloatOrZero(df['data'][0][idx+1])
         aFYJson[str(aQuarter)]=aFQDataDict
         oListJson.update(copy.deepcopy(aFYJson))
-        time.sleep(1)
     #print(oListJson)
     return oListJson
 
@@ -455,11 +526,11 @@ def get_last10k_balance_sheet(iMDBModel, iFormType, numberFilingsBack):
     headers = set_last10k_req_headers(APIPoolIndex)
     params = set_last10k_req_params(iFormType,numberFilingsBack)
 
-    #tickers = retrieve_sp_500_tickers()
     dataType = {"Balance Sheet":{}}
     dataYear = {get_last10k_form_name(iFormType):{}}
     errorList = []
-    companies = json.load(open('./bookshelf/SP500.json','r'))
+    #TODO ADD SP500 FILE
+    #companies = json.load(open('./bookshelf/SP500FILE','r'))
     conn = http.client.HTTPSConnection('services.last10k.com')
     for company in companies["SP500"]:
         conn.request("GET", "/v1/company/"+company["Ticker"]+"/balancesheet?%s" % params, "{body}", headers)
@@ -514,7 +585,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         #get_last10k_balance_sheet(model,'10-K','0')
 
         #Eikon all tickers
-        aEikonTickers=retrieve_eikon_file()
+        aEikonTickers=retrieve_eikon_file('SP500.txt')
         get_all_eikon_data(model,aEikonTickers)
         #wrongTickers=[]
         #for aTicker in aEikonTickers:
@@ -522,12 +593,14 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         #        print(aTicker)
         #        update_eikon_ticker_mongo(model, get_daily_updates, aTicker)
         #        update_eikon_ticker_mongo(model, get_business_summary, aTicker)
+        #    except KeyboardInterrupt:
+        #        sys.exit(0)
         #    except:
         #        wrongTickers.append(aTicker)
         #        print(wrongTickers)
         #        continue
         #print(wrongTickers)
-        #get_daily_updates('AAPL.O')
+        #print(get_competitors('AAPL.O'))
         #get_business_summary('AAPL.O')
 
 
