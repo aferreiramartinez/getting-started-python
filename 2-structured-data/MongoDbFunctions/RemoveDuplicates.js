@@ -1,13 +1,1 @@
-db.fundamentals.aggregate([
-  { $group: {
-    _id: { Ticker: "$Ticker" },   // replace `name` here twice
-    uniqueIds: { $addToSet: "$_id" },
-    count: { $sum: 1 } 
-  } }, 
-  { $match: { 
-    count: { $gt: 1 } 
-  } },
-  { $sort : { count : -1} },
-  { $limit : 10 }
-]);
-  
+db.getCollection('eikon').aggregate([  { $group: {    _id: { EikonTicker: "$EikonTicker" },   // replace `name` here twice    dups: { $addToSet: "$_id" },    count: { $sum: 1 }  } },  { $match: {    count: { $gt: 1 }  } }]).forEach(function(doc) {   doc.dups.shift();   db.getCollection('eikon').remove({       _id: {$in: doc.dups}   });});

@@ -525,20 +525,23 @@ def retrieve_fiscal_quarter_data(iEikonTicker):
         if fq in aFiscalQuarters[0:4]:
             aFQDataDict["Estimated"]="false"
             aFQDataDict["PeriodEndDate"]="false"
-            aPeriod = ek.get_data(iEikonTicker,'TR.EBITDA(Period='+fq+').fperiod',raw_output=True)
-            aPeriod = ek.get_data(iEikonTicker,'TR.EBITDA(Period='+fq+').fperiod',raw_output=True)
+            aPeriod = ek.get_data(iEikonTicker,['TR.EBITDA(Period='+fq+').fperiod','TR.EBITDA(Period='+fq+').periodenddate'],raw_output=True)
             aQuarter=aPeriod['data'][0][1]
+            aQuarterEndDate=aPeriod['data'][0][2]
             if aQuarter == '':
-                aPeriod = ek.get_data(iEikonTicker,'TR.EBITDAActValue(Period='+fq+').fperiod',raw_output=True)
+                aPeriod = ek.get_data(iEikonTicker,['TR.EBITDAActValue(Period='+fq+').fperiod', 'TR.EBITDAActValue(Period='+fq+').periodenddate'],raw_output=True)
                 aQuarter=aPeriod['data'][0][1]
+                aQuarterEndDate=aPeriod['data'][0][2]
             aLabels,df = retrieve_eikon_reports(iEikonTicker, fq)
         else:
             aFQDataDict["Estimated"]="true"
-            aPeriod = ek.get_data(iEikonTicker,'TR.EPSMean(Period='+fq+').fperiod',raw_output=True)
+            aPeriod = ek.get_data(iEikonTicker,['TR.EPSMean(Period='+fq+').fperiod','TR.EPSMean(Period='+fq+').periodenddate'],raw_output=True)
             aQuarter=aPeriod['data'][0][1]
+            aQuarterEndDate=aPeriod['data'][0][2]
             if aQuarter == ['']:
-                aPeriod = ek.get_data(iEikonTicker,'TR.EpsSmartEst(Period='+fq+').fperiod',raw_output=True)
+                aPeriod = ek.get_data(iEikonTicker,['TR.EpsSmartEst(Period='+fq+').fperiod','TR.EpsSmartEst(Period='+fq+').periodenddate'],raw_output=True)
                 aQuarter=aPeriod['data'][0][1]
+                aQuarterEndDate=aPeriod['data'][0][2]
             aLabels,df = retrieve_eikon_estimates(iEikonTicker, fq)
         #First elem of df is always the company name, we dont need it for len
         aDfLen=len(df['data'][0])-1
@@ -547,6 +550,7 @@ def retrieve_fiscal_quarter_data(iEikonTicker):
         for idx in range(0,aDfLen):
             aFQDataDict[aLabels[idx]]=FloatOrZero(df['data'][0][idx+1])
         aFYJson[str(aQuarter)]=aFQDataDict
+        aFYJson[str(aQuarter)]["PeriodEndDate"]=aQuarterEndDate
         oListJson.update(copy.deepcopy(aFYJson))
     #print(oListJson)
     return oListJson
@@ -617,12 +621,13 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
 
         #Eikon all tickers
         aEikonTickers=retrieve_eikon_file('IBEX35.txt')
-        get_all_eikon_data(model,aEikonTickers)
+        delete_ticker_data(model,["BetaWklyUp3Y","DailyUpdated"],aEikonTickers)
+        #get_all_eikon_data(model,aEikonTickers)
         #wrongTickers=[]
         #for aTicker in aEikonTickers:
         #    try:
         #        print(aTicker)
-        #        update_eikon_ticker_mongo(model, retrieve_fiscal_year_data, aTicker)
+        #        update_ticker_function(model, retrieve_fiscal_year_data, aTicker)
         #    except KeyboardInterrupt:
         #        sys.exit(0)
         #    except:
@@ -671,6 +676,7 @@ def get_model():
 
     return model
 
+
 def add_to_mongo(iModel,iData):
     #data = iData.to_dict(flat=True)
     #del iData['Content']
@@ -678,7 +684,8 @@ def add_to_mongo(iModel,iData):
     iModel.create(iData)
     print("added to mongo")
 
-def update_eikon_ticker_mongo(iModel, iEikonFunction, aEikonTickers):
+
+def update_ticker_function(iModel, iEikonFunction, aEikonTickers):
     from . import model_mongodb
     wrongTickers=[]
     for aTicker in aEikonTickers:
@@ -688,6 +695,29 @@ def update_eikon_ticker_mongo(iModel, iEikonFunction, aEikonTickers):
             updatedData=iEikonFunction(aTicker)
             data.update(updatedData)
             iModel.update(data,str(id))
+        except KeyboardInterrupt:
+            sys.exit(0)
+        except:
+            wrongTickers.append(aTicker)
+            print(wrongTickers)
+            continue
+    print(wrongTickers)
+    return data
+
+
+def delete_ticker_data(iModel, iKeyListToBeRemoved, aEikonTickers):
+    from . import model_mongodb
+    wrongTickers=[]
+    for aTicker in aEikonTickers:
+        try:
+            data = iModel.read_by_ticker(aTicker)
+            id = data['_id']
+            for key in iKeyListToBeRemoved:
+                try:
+                    del data[key]
+                    iModel.update(data,str(id))
+                except KeyError:
+                    pass
         except KeyboardInterrupt:
             sys.exit(0)
         except:

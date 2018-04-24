@@ -11,11 +11,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bookshelf/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="222">
-              <caret line="200" column="0" lean-forward="true" selection-start-line="200" selection-start-column="0" selection-end-line="200" selection-end-column="0" />
+            <state relative-caret-position="535">
+              <caret line="635" column="25" lean-forward="true" selection-start-line="635" selection-start-column="25" selection-end-line="635" selection-end-column="25" />
               <folding>
                 <element signature="e#576#590#0" expanded="true" />
                 <element signature="e#1465#1599#0" expanded="false" />
@@ -29,7 +29,6 @@
                 <element signature="e#4390#4668#0" expanded="false" />
                 <element signature="e#4703#5403#0" expanded="false" />
                 <element signature="e#5446#5674#0" expanded="false" />
-                <element signature="e#5723#6439#0" expanded="false" />
                 <element signature="e#6490#6923#0" expanded="false" />
                 <element signature="e#6966#7487#0" expanded="false" />
                 <element signature="e#7528#7956#0" expanded="false" />
@@ -43,11 +42,43 @@
                 <element signature="e#16213#16580#0" expanded="false" />
                 <element signature="e#16631#17718#0" expanded="false" />
                 <element signature="e#17777#19194#0" expanded="false" />
-                <element signature="e#20454#22124#0" expanded="false" />
-                <element signature="e#22202#23916#0" expanded="false" />
-                <element signature="e#25969#26291#0" expanded="false" />
-                <element signature="e#26329#26472#0" expanded="false" />
+                <element signature="e#19255#20400#0" expanded="false" />
+                <element signature="e#22562#24276#0" expanded="false" />
+                <element signature="e#26407#26729#0" expanded="false" />
+                <element signature="e#26768#26911#0" expanded="false" />
+                <element signature="e#26985#27491#0" expanded="false" />
+                <element signature="e#27566#28152#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RemoveDuplicates.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MongoDbFunctions/RemoveDuplicates.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="3" lean-forward="true" selection-start-line="0" selection-start-column="3" selection-end-line="0" selection-end-column="25" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FindDuplicates.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MongoDbFunctions/FindDuplicates.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="374">
+              <caret line="22" column="3" lean-forward="true" selection-start-line="22" selection-start-column="3" selection-end-line="22" selection-end-column="3" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="model_mongodb.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/bookshelf/model_mongodb.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="382">
+              <caret line="69" column="0" lean-forward="true" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -95,8 +126,8 @@
       <file leaf-file-name="IBEX35.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Tickers/IBEX35.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="6" lean-forward="false" selection-start-line="0" selection-start-column="6" selection-end-line="0" selection-end-column="6" />
+            <state relative-caret-position="578">
+              <caret line="34" column="6" lean-forward="false" selection-start-line="34" selection-start-column="6" selection-end-line="34" selection-end-column="6" />
               <folding />
             </state>
           </provider>
@@ -113,15 +144,11 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>date</find>
-      <find>eps</find>
-      <find>get_fiscal_year_dates</find>
       <find>update</find>
       <find>ebitda</find>
       <find>epssmartes</find>
       <find>estimate</find>
       <find>get_all_year_data</find>
-      <find>update_eikon_ticker_mongo</find>
       <find>activate</find>
       <find>retrieve_fiscal_year_data</find>
       <find>double_check_FY_data</find>
@@ -133,7 +160,6 @@
       <find>get_minority</find>
       <find>retrieve_fiscal</find>
       <find>double_check</find>
-      <find>retrieve_fiscal_quarter_data</find>
       <find>stimated</find>
       <find>print</find>
       <find>get_al</find>
@@ -143,6 +169,11 @@
       <find>retrieve_estimated_fiscal_year_data</find>
       <find>get_all</find>
       <find>get_all_eikon_data</find>
+      <find>retrieve_fiscal_quarter_data</find>
+      <find>update_eikon_ticker_mongo</find>
+      <find>read_by_ticker</find>
+      <find>eikonT</find>
+      <find>deep</find>
     </findStrings>
     <replaceStrings>
       <replace>get_last10k_balance_sheet</replace>
@@ -182,7 +213,6 @@
         <option value="$PROJECT_DIR$/Tickers/DAX.txt" />
         <option value="$PROJECT_DIR$/Tickers/AEX.txt" />
         <option value="$PROJECT_DIR$/Tickers/eikonTickers.txt" />
-        <option value="$PROJECT_DIR$/bookshelf/model_mongodb.py" />
         <option value="$PROJECT_DIR$/Tickers/SP500.txt" />
         <option value="$PROJECT_DIR$/Tickers/NIKKEI225.txt" />
         <option value="$PROJECT_DIR$/Tickers/FTSE350.txt" />
@@ -197,6 +227,9 @@
         <option value="$PROJECT_DIR$/MongoDbFunctions/Type.js" />
         <option value="$PROJECT_DIR$/Tickers/IBEX35.txt" />
         <option value="$PROJECT_DIR$/bookshelf/__init__.py" />
+        <option value="$PROJECT_DIR$/MongoDbFunctions/RemoveDuplicates.js" />
+        <option value="$PROJECT_DIR$/MongoDbFunctions/FindDuplicates.js" />
+        <option value="$PROJECT_DIR$/bookshelf/model_mongodb.py" />
       </list>
     </option>
   </component>
@@ -255,16 +288,16 @@
     <property name="settings.editor.selected.configurable" value="preferences.editor" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\ant1_\Documents\Git Repos\getting-started-python\2-structured-data\MongoDbFunctions" />
+      <recent name="C:\Users\ant1_\Documents\Git Repos\getting-started-python\2-structured-data\Tickers" />
+      <recent name="C:\Users\ant1_\Documents\Git Repos\getting-started-python\2-structured-data" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\ant1_\Documents\Git Repos\getting-started-python\2-structured-data" />
       <recent name="C:\Users\ant1_\Documents\Git Repos\getting-started-python\2-structured-data\Tickers" />
       <recent name="C:\Users\ant1_\Documents\Git Repos\getting-started-python\2-structured-data\MongoDbFunctions" />
       <recent name="C:\Users\ant1_\Documents\Git Repos\getting-started-python\2-structured-data\bookshelf" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\ant1_\Documents\Git Repos\getting-started-python\2-structured-data\Tickers" />
-      <recent name="C:\Users\ant1_\Documents\Git Repos\getting-started-python\2-structured-data\MongoDbFunctions" />
-      <recent name="C:\Users\ant1_\Documents\Git Repos\getting-started-python\2-structured-data" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -393,6 +426,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13958333" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3398693" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Google Cloud Storage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -404,7 +438,6 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.339934" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -418,7 +451,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/test.txt" />
     <entry file="file://$PROJECT_DIR$/env/Lib/site-packages/pandas/io/sql.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="202">
@@ -520,13 +552,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="493">
           <caret line="29" column="8" lean-forward="true" selection-start-line="29" selection-start-column="8" selection-end-line="29" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bookshelf/model_mongodb.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="455">
-          <caret line="87" column="0" lean-forward="true" selection-start-line="87" selection-start-column="0" selection-end-line="87" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -684,21 +709,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/MongoDbFunctions/RemoveDuplicates.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="7" lean-forward="false" selection-start-line="2" selection-start-column="2" selection-end-line="10" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tickers/IBEX35.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="6" lean-forward="false" selection-start-line="0" selection-start-column="6" selection-end-line="0" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -715,14 +725,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/MongoDbFunctions/Type.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="90" lean-forward="false" selection-start-line="2" selection-start-column="90" selection-end-line="2" selection-end-column="90" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Tickers/errors.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="856">
@@ -731,10 +733,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Tickers/IBEX35.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="578">
+          <caret line="34" column="6" lean-forward="false" selection-start-line="34" selection-start-column="6" selection-end-line="34" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/bookshelf/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="222">
-          <caret line="200" column="0" lean-forward="true" selection-start-line="200" selection-start-column="0" selection-end-line="200" selection-end-column="0" />
+        <state relative-caret-position="535">
+          <caret line="635" column="25" lean-forward="true" selection-start-line="635" selection-start-column="25" selection-end-line="635" selection-end-column="25" />
           <folding>
             <element signature="e#576#590#0" expanded="true" />
             <element signature="e#1465#1599#0" expanded="false" />
@@ -748,7 +758,6 @@
             <element signature="e#4390#4668#0" expanded="false" />
             <element signature="e#4703#5403#0" expanded="false" />
             <element signature="e#5446#5674#0" expanded="false" />
-            <element signature="e#5723#6439#0" expanded="false" />
             <element signature="e#6490#6923#0" expanded="false" />
             <element signature="e#6966#7487#0" expanded="false" />
             <element signature="e#7528#7956#0" expanded="false" />
@@ -762,11 +771,45 @@
             <element signature="e#16213#16580#0" expanded="false" />
             <element signature="e#16631#17718#0" expanded="false" />
             <element signature="e#17777#19194#0" expanded="false" />
-            <element signature="e#20454#22124#0" expanded="false" />
-            <element signature="e#22202#23916#0" expanded="false" />
-            <element signature="e#25969#26291#0" expanded="false" />
-            <element signature="e#26329#26472#0" expanded="false" />
+            <element signature="e#19255#20400#0" expanded="false" />
+            <element signature="e#22562#24276#0" expanded="false" />
+            <element signature="e#26407#26729#0" expanded="false" />
+            <element signature="e#26768#26911#0" expanded="false" />
+            <element signature="e#26985#27491#0" expanded="false" />
+            <element signature="e#27566#28152#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MongoDbFunctions/Type.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="90" lean-forward="false" selection-start-line="2" selection-start-column="90" selection-end-line="2" selection-end-column="90" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MongoDbFunctions/RemoveDuplicates.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="3" lean-forward="true" selection-start-line="0" selection-start-column="3" selection-end-line="0" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MongoDbFunctions/FindDuplicates.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="22" column="3" lean-forward="true" selection-start-line="22" selection-start-column="3" selection-end-line="22" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bookshelf/model_mongodb.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="382">
+          <caret line="69" column="0" lean-forward="true" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
