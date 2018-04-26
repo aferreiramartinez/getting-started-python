@@ -281,8 +281,8 @@ def get_major_shareholders(iEikonTicker):
     oMajorOwners = {"Top-10-Owners":{}}
     aJson={}
     aHolders = ek.get_data(instruments=[iEikonTicker], fields=['TR.InvestorFullName',
-                                                           'TR.SharesHeld',
-                                                           'TR.PctOfSharesOutHeld'],raw_output=True)
+                                                               'TR.SharesHeld',
+                                                               'TR.PctOfSharesOutHeld'],raw_output=True)
     for aHolder in aHolders["data"]:
         if maxShareholders >= 0:
             maxShareholders -= 1
@@ -431,7 +431,7 @@ def retrieve_eikon_reports(iEikonTicker, iPeriod):
              'LTInvestments',
              'OtherCurrentAssets',
              'TotalAssets',
-             'TradeAccPayable'
+             'TradeAccPayable',
              'TotalLiabilities',
              'TotalLTDebt',
              'TotalSTDebt',
@@ -479,7 +479,7 @@ def retrieve_eikon_reports(iEikonTicker, iPeriod):
                       'TR.CashFromOperatingActivities(Period='+iPeriod+')',
                       'TR.CashFromInvestingActivities(Period='+iPeriod+')',
                       'TR.CashFromFinancingActivities(Period='+iPeriod+')',
-                      'TR.CashAndCashEquiv(Period='+iPeriod+')',
+                      'TR.CashandEquivalents(Period='+iPeriod+')',
                       'TR.AcctsReceivTradeNet(Period='+iPeriod+')',
                       'TR.TotalInventory(Period='+iPeriod+')',
                       'TR.IntangiblesNet(Period='+iPeriod+')',
