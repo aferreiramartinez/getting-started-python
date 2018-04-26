@@ -96,7 +96,8 @@ def get_business_summary(iEikonTicker):
              'BusinessSector',
              'TradedInIdentifier',
              'MemberIndexRic',
-             'PriceMainIndexRIC']
+             'PriceMainIndexRIC',
+             'MoodysRating']
     df = ek.get_data(iEikonTicker,
                      ['TR.BusinessSummary',
                       'TR.HQCountryCode',
@@ -108,7 +109,8 @@ def get_business_summary(iEikonTicker):
                       'TR.BusinessSector',
                       'CF_EXCHNG',
                       'TR.MemberIndexRic',
-                      'TR.PriceMainIndexRIC'],
+                      'TR.PriceMainIndexRIC',
+                      'TR.IssuerRating'],
                      raw_output=True)
     for business in aLabels:
         aBusinessSummaryJson[business]=df['data'][0][aStartIndex]
@@ -116,21 +118,21 @@ def get_business_summary(iEikonTicker):
     return aBusinessSummaryJson
 
 def get_common_name(iEikonTicker):
-    aNameJson={}
+    oNameJson={}
     df = ek.get_data(iEikonTicker, 'TR.CommonName',raw_output=True)
-    aNameJson["CompanyName"]=df['data'][0][1]
-    return aNameJson
+    oNameJson["CompanyName"]=df['data'][0][1]
+    return oNameJson
 
 def get_52_week_high_low(iEikonTicker):
-    a52WHighLowJson={}
+    o52WHighLowJson={}
     df = ek.get_data(iEikonTicker, ['TR.Price52WeekHigh','TR.Price52WeekLow'], raw_output=True)
-    a52WHighLowJson["Price52WeekHigh"]=FloatOrZero(df['data'][0][1])
-    a52WHighLowJson["Price52WeekLow"]=FloatOrZero(df['data'][0][2])
-    return a52WHighLowJson
+    o52WHighLowJson["Price52WeekHigh"]=FloatOrZero(df['data'][0][1])
+    o52WHighLowJson["Price52WeekLow"]=FloatOrZero(df['data'][0][2])
+    return o52WHighLowJson
 
 def get_betas(iEikonTicker):
     print("betas")
-    aBetasJson={"Betas":{}}
+    oBetasJson={"Betas":{}}
     aStartIndex=1
     aLabels=['BetaWkly3Y',
              'BetaWklyUp3Y',
@@ -147,16 +149,16 @@ def get_betas(iEikonTicker):
                       'TR.BetaWklyDown2Y'],
                      raw_output=True)
     for betas in aLabels:
-        aBetasJson["Betas"][betas]=FloatOrZero(df['data'][0][aStartIndex])
+        oBetasJson["Betas"][betas]=FloatOrZero(df['data'][0][aStartIndex])
         aStartIndex+=1
-    return aBetasJson
+    return oBetasJson
 
 def get_30_day_volume(iEikonTicker):
-    aAccumulatedVol = 0
+    oAccumulatedVol = 0
     volumes=ek.get_data(iEikonTicker, 'TR.ACCUMULATEDVOLUME(SDate=0,EDate=-29,Frq=D)',raw_output=True)
     for vol in volumes['data']:
-        aAccumulatedVol += FloatOrZero(vol[1])
-    return aAccumulatedVol
+        oAccumulatedVol += FloatOrZero(vol[1])
+    return oAccumulatedVol
 
 def get_365_day_share_price(iEikonTicker):
     print("365 daily price")
@@ -214,26 +216,26 @@ def get_competitors(iEikonTicker):
 
 def get_minority_interest(iEikonTicker):
     print("min interest")
-    aMinInterest={}
+    oMinInterest={}
     df = ek.get_data(iEikonTicker, 'TR.MinorityInterestNonRedeemable', raw_output=True)
-    aMinInterest["MinorityInterest"]=FloatOrZero(df['data'][0][1])
-    return aMinInterest
+    oMinInterest["MinorityInterest"]=FloatOrZero(df['data'][0][1])
+    return oMinInterest
 
 def get_fiscal_year_dates(iEikonTicker):
     print("FY dates")
-    aFY={}
+    oFY={}
     df = ek.get_data(iEikonTicker,'TR.EBITDA(Period=FY0).periodenddate',raw_output=True)
     month=df['data'][0][1].split("-")[1].lstrip("0")
     aMonthName=calendar.month_abbr[int(month)].upper()
     aMonthDay=df['data'][0][1].split("-")[2]
-    aFY["FYEndDate"]=(aMonthDay+'-'+aMonthName)
-    return aFY
+    oFY["FYEndDate"]=(aMonthDay+'-'+aMonthName)
+    return oFY
 
 def get_major_shareholders_cnn(iEikonTicker):
     print("major shareholders")
     #Init dictionaries
-    aMajorOwners={"Top-10-Owners":{}}
-    aMajorFunds={"Top-10-Mutual-Funds":{}}
+    oMajorOwners={"Top-10-Owners":{}}
+    oMajorFunds={"Top-10-Mutual-Funds":{}}
     aTopOwnersDict={}
     aTopFundsDict={}
     iSimplifiedTicker=eikon_to_regular_ticker(iEikonTicker)
@@ -270,9 +272,9 @@ def get_major_shareholders_cnn(iEikonTicker):
             aPercDict2["Percentage"]=aTopFundPerc
             aTopFundsDict[aTopaFundName]=aPercDict2
 
-    aMajorOwners["Top-10-Owners"]=aTopOwnersDict
-    aMajorFunds["Top-10-Mutual-Funds"]=aTopFundsDict
-    return [aMajorOwners,aMajorFunds]
+    oMajorOwners["Top-10-Owners"]=aTopOwnersDict
+    oMajorFunds["Top-10-Mutual-Funds"]=aTopFundsDict
+    return [oMajorOwners,oMajorFunds]
 
 def get_major_shareholders(iEikonTicker):
     maxShareholders = 10
@@ -379,20 +381,61 @@ def get_all_eikon_data(aMongoDBModel,iEikonTickers):
             continue
 
 def retrieve_eikon_reports(iEikonTicker, iPeriod):
-    aLabels=['EBITDA',
+    oLabels=['EBITDA',
              'EBIT',
              'TotalRevenue',
              'EPS',
              'DilSharesOut',
              'CashAndSTInv',
              'TotalDebt',
+             'NetDebt',
              'MinorityInterest',
              'DPS',
              'EV/EBITDA',
              'EV/EBIT',
              'NetDebt',
              'EV',
-             'PE']
+             'PE',
+             'GrossProfit',
+             'NetIncome',
+             'NetIncomeBeforeExtra',
+             'ProvisionForIncomeTaxes',
+             'DiscOperations',
+             'GrossMarginPct',
+             'EBITMarginPct',
+             'EBITDAMarginPct',
+             'CashFromOperatingActivities',
+             'FreeCashFlow',
+             'Capex',
+             'CashIntPaid',
+             'CashTaxesPaid',
+             'ChangesInWorkingCapital',
+             'AcqOfBusiness',
+             'PurchaseOfInvest',
+             'LTDebtReduction',
+             'STDebtReduction',
+             'Proceeds',
+             'RepurchaseOfStock',
+             'CashDividendsPaid',
+             'NetCashEndingBalance',
+             'NetCashBeginningBalance',
+             'CashFromOperatingActivities',
+             'CashFromInvestingActivities',
+             'CashFromFinancingActivities',
+             'CashAndCashEquiv',
+             'NetTradeAccReceivable',
+             'Inventories',
+             'IntangiblesNet',
+             'NetPropertyPlantEquipment',
+             'GoodwillNet',
+             'LTInvestments',
+             'OtherCurrentAssets',
+             'TotalAssets',
+             'TradeAccPayable'
+             'TotalLiabilities',
+             'TotalLTDebt',
+             'TotalSTDebt',
+             'TotalLiabAndShareholdersEquity']
 
     df = ek.get_data(iEikonTicker,
                      ['TR.EBITDAActValue(Period='+iPeriod+')',
@@ -402,15 +445,56 @@ def retrieve_eikon_reports(iEikonTicker, iPeriod):
                       'TR.TtlCmnSharesOut(Period='+iPeriod+')',
                       'TR.CashAndSTInvestments(Period='+iPeriod+')',
                       'TR.TotalDebtOutstanding(Period='+iPeriod+')',
-                      'TR.MinorityInterestNonRedeemable(Period='+iPeriod+')',
+                      'TR.NetDebt(Period='+iPeriod+')',
+                      'TR.MinorityInterestBSStmt(Period='+iPeriod+')',
                       'TR.DpsCommonStock(Period='+iPeriod+')',
                       'TR.HistEnterpriseValueEBITDA(Period='+iPeriod+')',
                       'TR.EVEBIT(Period='+iPeriod+')',
                       'TR.NetDebt(Period='+iPeriod+')',
                       'TR.HistEnterpriseValue(Period='+iPeriod+')',
-                      'TR.HistPE(Period='+iPeriod+')'],
+                      'TR.HistPE(Period='+iPeriod+')',
+                      'TR.GrossProfit(Period='+iPeriod+')',
+                      'TR.NetIncome(Period='+iPeriod+')',
+                      'TR.NetIncomeBeforeExtraItems(Period='+iPeriod+')',
+                      'TR.ProvisionForIncomeTaxes(Period='+iPeriod+')',
+                      'TR.DiscontinuedOperations(Period='+iPeriod+')',
+                      'TR.GrossMargin(Period='+iPeriod+')',
+                      'TR.EBITMarginPercent(Period='+iPeriod+')',
+                      'TR.EBITDAMarginPercent(Period='+iPeriod+')',
+                      'TR.CashFromOperatingActivities(Period='+iPeriod+')',
+                      'TR.FreeCashFlow(Period='+iPeriod+')',
+                      'TR.CapitalExpenditures(Period='+iPeriod+')',
+                      'TR.CashInterestPaid(Period='+iPeriod+')',
+                      'TR.CashTaxesPaid(Period='+iPeriod+')',
+                      'TR.ChangesInWorkingCapital(Period='+iPeriod+')',
+                      'TR.AcquisitionOfBusiness(Period='+iPeriod+')',
+                      'TR.PurchaseOfInvestments(Period='+iPeriod+')',
+                      'TR.LTDebtReduction(Period='+iPeriod+')',
+                      'TR.STDebtReduction(Period='+iPeriod+')',
+                      'TR.SaleMaturityofInvestment(Period='+iPeriod+')',
+                      'TR.RepurchaseRetirementOfCommon(Period='+iPeriod+')',
+                      'TR.TotalCashDividendsPaid(Period='+iPeriod+')',
+                      'TR.NetCashEndingBalance(Period='+iPeriod+')',
+                      'TR.NetCashBeginningBalance(Period='+iPeriod+')',
+                      'TR.CashFromOperatingActivities(Period='+iPeriod+')',
+                      'TR.CashFromInvestingActivities(Period='+iPeriod+')',
+                      'TR.CashFromFinancingActivities(Period='+iPeriod+')',
+                      'TR.CashAndCashEquiv(Period='+iPeriod+')',
+                      'TR.AcctsReceivTradeNet(Period='+iPeriod+')',
+                      'TR.TotalInventory(Period='+iPeriod+')',
+                      'TR.IntangiblesNet(Period='+iPeriod+')',
+                      'TR.PropertyPlantEquipmentTotalNet(Period='+iPeriod+')',
+                      'TR.GoodwillNet(Period='+iPeriod+')',
+                      'TR.LTInvestments(Period='+iPeriod+')',
+                      'TR.OtherCurrentAssets(Period='+iPeriod+')',
+                      'TR.TotalAssetsReported(Period='+iPeriod+')',
+                      'TR.AccountsPayable(Period='+iPeriod+')',
+                      'TR.TotalLiabilities(Period='+iPeriod+')',
+                      'TR.TotalLTDebt(Period='+iPeriod+')',
+                      'TR.CurrentPortionLTDebtToCapitalLeases(Period='+iPeriod+')',
+                      'TR.TotalLiabilitiesAndShareholdersEquity(Period='+iPeriod+')'],
                      raw_output=True)
-    return [aLabels,df]
+    return [oLabels,df]
 
 def double_check_FY_data(iTicker,iPeriod,ioJsonData):
     if ioJsonData['EBITDA'] == 0.0:
@@ -447,6 +531,7 @@ def retrieve_fiscal_year_data(iEikonTicker):
         oListJson.update(copy.deepcopy(aFYJson))
         aFY0=aFY0+1
 
+    print(oListJson)
     return oListJson
 
 def retrieve_eikon_estimates(iEikonTicker, iPeriod):
@@ -464,7 +549,8 @@ def retrieve_eikon_estimates(iEikonTicker, iPeriod):
              "FwdEV/EBITDASmart",
              "FwdEV/EBITSmart",
              "NetDebtMean",
-             "PESmart"]
+             "PESmart",
+             "GrossIncomeMean"]
 
     df = ek.get_data(iEikonTicker,
                      ['TR.RevenueMean(Period='+iPeriod+')',
@@ -481,7 +567,8 @@ def retrieve_eikon_estimates(iEikonTicker, iPeriod):
                       'TR.FwdEVtoEBTSmartEst(Period='+iPeriod+')',
                       'TR.FwdEVtoEBISmartEst(Period='+iPeriod+')',
                       'TR.NetDebtMean(Period='+iPeriod+')',
-                      'TR.FwdPtoEPSSmartEst(Period='+iPeriod+')'],
+                      'TR.FwdPtoEPSSmartEst(Period='+iPeriod+')',
+                      'TR.GrossIncomeMean(Period='+iPeriod+')'],
                      raw_output=True)
     return [aLabels,df]
 
@@ -621,8 +708,9 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
 
         #Eikon all tickers
         aEikonTickers=retrieve_eikon_file('IBEX35.txt')
-        delete_ticker_data(model,["BetaWklyUp3Y","DailyUpdated"],aEikonTickers)
+        #delete_ticker_data(model,["BetaWklyUp3Y","DailyUpdated"],aEikonTickers)
         #get_all_eikon_data(model,aEikonTickers)
+        retrieve_fiscal_year_data("AAPL.O")
         #wrongTickers=[]
         #for aTicker in aEikonTickers:
         #    try:
