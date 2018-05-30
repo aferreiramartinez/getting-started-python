@@ -14,7 +14,7 @@
 
 import logging
 from lxml import html
-import http.client, urllib.request, urllib.parse, urllib.error, base64, json, time, datetime, math, requests, calendar,copy, sys
+import http.client, urllib.request, urllib.parse, urllib.error, base64, json, datetime, time, math, requests, calendar,copy, sys,collections
 import eikon as ek
 import pandas as pd
 from pprint import pprint
@@ -88,6 +88,7 @@ def get_business_summary(iEikonTicker):
     aStartIndex=1
     aLabels=['CompanyDescription',
              'HQCountryCode',
+             'Currency',
              'GICSSector',
              'GICSIndustryGroup',
              'GICSIndustry',
@@ -101,6 +102,7 @@ def get_business_summary(iEikonTicker):
     df = ek.get_data(iEikonTicker,
                      ['TR.BusinessSummary',
                       'TR.HQCountryCode',
+                      'TR.TotalAssetsReported(Period=FY0).currency',
                       'TR.GICSSector',
                       'TR.GICSIndustryGroup',
                       'TR.GICSIndustry',
@@ -125,9 +127,10 @@ def get_common_name(iEikonTicker):
 
 def get_52_week_high_low(iEikonTicker):
     o52WHighLowJson={}
-    df = ek.get_data(iEikonTicker, ['TR.Price52WeekHigh','TR.Price52WeekLow'], raw_output=True)
+    df = ek.get_data(iEikonTicker, ['TR.Price52WeekHigh','TR.Price52WeekLow','TR.Revenue.Currency'], raw_output=True)
     o52WHighLowJson["Price52WeekHigh"]=FloatOrZero(df['data'][0][1])
     o52WHighLowJson["Price52WeekLow"]=FloatOrZero(df['data'][0][2])
+    o52WHighLowJson["Currency"]=str(df['data'][0][3])
     return o52WHighLowJson
 
 def get_betas(iEikonTicker):
@@ -192,7 +195,7 @@ def get_daily_updates(iEikonTicker):
     aLabels=['CompanyMarketCap',
              'EV',
              'SharePrice',
-             'aDailyVolume',
+             'DailyVolume',
              'PE']
     df = ek.get_data(iEikonTicker, ['TR.CompanyMarketCap','TR.EV','CF_LAST','TR.Volume','TR.PE'], raw_output=True)
     for data in aLabels:
@@ -204,13 +207,14 @@ def get_daily_updates(iEikonTicker):
 def get_competitors(iEikonTicker):
     print("competitors")
     aIndex=1
-    oDailyJson={"Competitors":{}}
+    oDailyJson={"Competitors":[]}
     aJson={}
     screener_exp = "SCREEN(U(IN(Peers('"+iEikonTicker+"'))))"
-    peers = ek.get_data(instruments=[screener_exp], fields=['TR.CompanyName'],raw_output=True)
+    peers = ek.get_data(instruments=[screener_exp], fields=['TR.CompanyName','TR.RICCode'],raw_output=True)
     for company in peers["data"]:
-        aJson["name"]=company[1]
-        oDailyJson["Competitors"]["Competitor-"+str(aIndex)]=copy.deepcopy(aJson)
+        aJson["Name"]=company[1]
+        aJson["EikonTicker"]=company[2]
+        oDailyJson["Competitors"].append(copy.deepcopy(aJson))
         aIndex += 1
     return oDailyJson
 
@@ -278,20 +282,41 @@ def get_major_shareholders_cnn(iEikonTicker):
 
 def get_major_shareholders(iEikonTicker):
     maxShareholders = 10
-    oMajorOwners = {"Top-10-Owners":{}}
+    oMajorOwners = {"Top-10-Owners":[]}
     aJson={}
     aHolders = ek.get_data(instruments=[iEikonTicker], fields=['TR.InvestorFullName',
-                                                           'TR.SharesHeld',
-                                                           'TR.PctOfSharesOutHeld'],raw_output=True)
+                                                               'TR.SharesHeld',
+                                                               'TR.PctOfSharesOutHeld'],raw_output=True)
     for aHolder in aHolders["data"]:
         if maxShareholders >= 0:
             maxShareholders -= 1
+            aJson["Name"]=aHolder[1].replace(".","")
             aJson["Percentage"]=FloatOrZero(aHolder[3])
             aJson["SharesOutstandingHeld"]=FloatOrZero(aHolder[2])
-            oMajorOwners["Top-10-Owners"][aHolder[1].replace(".","")]=copy.deepcopy(aJson)
+
+            oMajorOwners["Top-10-Owners"].append(copy.deepcopy(aJson))
         else:
             break
     return oMajorOwners
+
+def get_fiscal_quarter_end_date(iEikonTicker, iPeriod, iEstimated):
+    if iEstimated is False:
+        aPeriod = ek.get_data(iEikonTicker,['TR.EBITDA(Period='+iPeriod+').fperiod','TR.EBITDA(Period='+iPeriod+').periodenddate'],raw_output=True)
+        aQuarter=aPeriod['data'][0][1]
+        aQuarterEndDate=aPeriod['data'][0][2]
+        if aQuarter == '':
+            aPeriod = ek.get_data(iEikonTicker,['TR.EBITDAActValue(Period='+iPeriod+').fperiod', 'TR.EBITDAActValue(Period='+iPeriod+').periodenddate'],raw_output=True)
+            aQuarter=aPeriod['data'][0][1]
+            aQuarterEndDate=aPeriod['data'][0][2]
+    else:
+        aPeriod = ek.get_data(iEikonTicker,['TR.EPSMean(Period='+iPeriod+').fperiod','TR.EPSMean(Period='+iPeriod+').periodenddate'],raw_output=True)
+        aQuarter=aPeriod['data'][0][1]
+        aQuarterEndDate=aPeriod['data'][0][2]
+        if aQuarter == ['']:
+            aPeriod = ek.get_data(iEikonTicker,['TR.EpsSmartEst(Period='+iPeriod+').fperiod','TR.EpsSmartEst(Period='+iPeriod+').periodenddate'],raw_output=True)
+            aQuarter=aPeriod['data'][0][1]
+            aQuarterEndDate=aPeriod['data'][0][2]
+    return [aQuarter,aQuarterEndDate]
 
 def get_all_year_data(iEikonTicker):
     oJson={"DataByFiscalYear":{}}
@@ -307,6 +332,9 @@ def get_all_eikon_data(aMongoDBModel,iEikonTickers):
     for aEikonTicker in iEikonTickers:
         try:
             print(aEikonTicker)
+
+            #Timestamp
+            aEikonAllData["LastModified"]= datetime.utcnow()
 
             #Tickers
             aEikonAllData["EikonTicker"]=aEikonTicker
@@ -367,10 +395,10 @@ def get_all_eikon_data(aMongoDBModel,iEikonTickers):
 
             #Fiscal quarter data
             aFiscalQuarterData=retrieve_fiscal_quarter_data(aEikonTicker)
-            aEikonAllData["DataByFiscalQuarter"]=(aFiscalQuarterData)
+            aEikonAllData.update(aFiscalQuarterData)
 
+            add_to_mongo(aMongoDBModel,aEikonAllData)
             print(aEikonAllData)
-            #add_to_mongo(aMongoDBModel,aEikonAllData)
             aEikonAllData.clear()
             print(aEikonExeptList)
         except KeyboardInterrupt:
@@ -381,93 +409,142 @@ def get_all_eikon_data(aMongoDBModel,iEikonTickers):
             continue
 
 def retrieve_eikon_reports(iEikonTicker, iPeriod):
-    oLabels=['EBITDA',
-             'EBIT',
-             'TotalRevenue',
-             'EPS',
-             'DilSharesOut',
-             'CashAndSTInv',
-             'TotalDebt',
-             'NetDebt',
-             'MinorityInterest',
-             'DPS',
-             'EV/EBITDA',
-             'EV/EBIT',
-             'NetDebt',
-             'EV',
-             'PE',
-             'GrossProfit',
-             'NetIncome',
-             'NetIncomeBeforeExtra',
-             'ProvisionForIncomeTaxes',
-             'DiscOperations',
-             'GrossMarginPct',
-             'EBITMarginPct',
-             'EBITDAMarginPct',
-             'CashFromOperatingActivities',
-             'FreeCashFlow',
-             'Capex',
-             'CashIntPaid',
-             'CashTaxesPaid',
-             'ChangesInWorkingCapital',
-             'AcqOfBusiness',
-             'PurchaseOfInvest',
-             'LTDebtReduction',
-             'STDebtReduction']
-
+    aLabels=collections.OrderedDict({'CashAndEquiv':'BalanceSheet',
+             'NetTradeAccReceivable':'BalanceSheet',
+             'Inventories':'BalanceSheet',
+             'IntangiblesNet':'BalanceSheet',
+             'NetPropertyPlantEquipment':'BalanceSheet',
+             'GoodwillNet':'BalanceSheet',
+             'LTInvestments':'BalanceSheet',
+             'OtherCurrentAssets':'BalanceSheet',
+             'TotalAssets':'BalanceSheet',
+             'TradeAccPayable':'BalanceSheet',
+             'TotalLiabilities':'BalanceSheet',
+             'TotalLTDebt':'BalanceSheet',
+             'CurrentLTDebt':'BalanceSheet',
+             'TotalSTBorrowings':'BalanceSheet',
+             'NotesPayableSTDebt':'BalanceSheet',
+             'PreferredStock':'BalanceSheet',
+             'TotalLiabAndShareholdersEquity':'BalanceSheet',
+             'CashAndSTInv':'BalanceSheet',
+             'TotalDebt':'BalanceSheet',
+             'NetDebt':'BalanceSheet',
+             'MinorityInterest':'BalanceSheet',
+             'DilSharesOut':'Other',
+             'EV/EBITDA':'Other',
+             'EV/EBIT':'Other',
+             'EV':'Other',
+             'P/E':'Other',
+             'GrossMarginPct':'Other',
+             'EBITMarginPct':'Other',
+             'EBITDAMarginPct':'Other',
+             'DPS':'IncomeStatement',
+             'EBITDA':'IncomeStatement',
+             'EBIT':'IncomeStatement',
+             'TotalRevenue':'IncomeStatement',
+             'EPS':'IncomeStatement',
+             'EPSInclExtra':'IncomeStatement',
+             'GrossProfit':'IncomeStatement',
+             'NetIncome':'IncomeStatement',
+             'NetIncomeBeforeExtra':'IncomeStatement',
+             'ProvisionForIncomeTaxes':'IncomeStatement',
+             'DiscOperations':'IncomeStatement',
+             'FreeCashFlow':'CashFlow',
+             'Capex':'CashFlow',
+             'CashIntPaid':'CashFlow',
+             'CashTaxesPaid':'CashFlow',
+             'ChangesInWorkingCapital':'CashFlow',
+             'AcqOfBusiness':'CashFlow',
+             'SaleOfBusiness':'CashFlow',
+             'PurchaseOfInvest':'CashFlow',
+             'LTDebtReduction':'CashFlow',
+             'STDebtReduction':'CashFlow',
+             'Proceeds':'CashFlow',
+             'RepurchaseOfStock':'CashFlow',
+             'CashDividendsPaid':'CashFlow',
+             'NetCashEndingBalance':'CashFlow',
+             'NetCashBeginningBalance':'CashFlow',
+             'CashFromOperatingActivities':'CashFlow',
+             'CashFromInvestingActivities':'CashFlow',
+             'CashFromFinancingActivities':'CashFlow'})
+    oLabels=list(aLabels.items())
     df = ek.get_data(iEikonTicker,
-                     ['TR.EBITDAActValue(Period='+iPeriod+')',
-                      'TR.EBITActValue(Period='+iPeriod+')',
-                      'TR.TotalRevenue(Period='+iPeriod+')',
-                      'TR.EPSActValue(Period='+iPeriod+')',
-                      'TR.TtlCmnSharesOut(Period='+iPeriod+')',
+                     ['TR.CashandEquivalents(Period='+iPeriod+')',
+                      'TR.AcctsReceivTradeNet(Period='+iPeriod+')',
+                      'TR.TotalInventory(Period='+iPeriod+')',
+                      'TR.IntangiblesNet(Period='+iPeriod+')',
+                      'TR.PropertyPlantEquipmentTotalNet(Period='+iPeriod+')',
+                      'TR.GoodwillNet(Period='+iPeriod+')',
+                      'TR.LTInvestments(Period='+iPeriod+')',
+                      'TR.OtherCurrentAssets(Period='+iPeriod+')',
+                      'TR.TotalAssetsReported(Period='+iPeriod+')',
+                      'TR.AccountsPayable(Period='+iPeriod+')',
+                      'TR.TotalLiabilities(Period='+iPeriod+')',
+                      'TR.TotalLongTermDebt(Period='+iPeriod+')',
+                      'TR.CurrentPortionLTDebtToCapitalLeases(Period='+iPeriod+')',
+                      'TR.TotalSTBorrowings(Period='+iPeriod+')',
+                      'TR.NotesPayableSTDebt(Period='+iPeriod+')',
+                      'TR.PreferredStockNonRedeemableNet(Period='+iPeriod+')',
+                      'TR.TotalLiabilitiesAndShareholdersEquity(Period='+iPeriod+')',
                       'TR.CashAndSTInvestments(Period='+iPeriod+')',
                       'TR.TotalDebtOutstanding(Period='+iPeriod+')',
                       'TR.NetDebt(Period='+iPeriod+')',
                       'TR.MinorityInterestBSStmt(Period='+iPeriod+')',
-                      'TR.DpsCommonStock(Period='+iPeriod+')',
+                      'TR.DilutedWghtdAvgShares(Period='+iPeriod+')',
                       'TR.HistEnterpriseValueEBITDA(Period='+iPeriod+')',
                       'TR.EVEBIT(Period='+iPeriod+')',
-                      'TR.NetDebt(Period='+iPeriod+')',
                       'TR.HistEnterpriseValue(Period='+iPeriod+')',
                       'TR.HistPE(Period='+iPeriod+')',
+                      'TR.GrossMargin(Period='+iPeriod+')',
+                      'TR.EBITMarginPercent(Period='+iPeriod+')',
+                      'TR.EBITDAMarginPercent(Period='+iPeriod+')',
+                      'TR.DpsCommonStock(Period='+iPeriod+')',
+                      'TR.EBITDAActValue(Period='+iPeriod+')',
+                      'TR.EBITActValue(Period='+iPeriod+')',
+                      'TR.TotalRevenue(Period='+iPeriod+')',
+                      'TR.DilutedEpsExclExtra(Period='+iPeriod+')',
+                      'TR.DilutedEpsInclExtra(Period='+iPeriod+')',
                       'TR.GrossProfit(Period='+iPeriod+')',
                       'TR.NetIncome(Period='+iPeriod+')',
                       'TR.NetIncomeBeforeExtraItems(Period='+iPeriod+')',
                       'TR.ProvisionForIncomeTaxes(Period='+iPeriod+')',
                       'TR.DiscontinuedOperations(Period='+iPeriod+')',
-                      'TR.GrossMargin(Period='+iPeriod+')',
-                      'TR.EBITMarginPercent(Period='+iPeriod+')',
-                      'TR.EBITDAMarginPercent(Period='+iPeriod+')',
-                      'TR.CashFromOperatingActivities(Period='+iPeriod+')',
                       'TR.FreeCashFlow(Period='+iPeriod+')',
                       'TR.CapitalExpenditures(Period='+iPeriod+')',
                       'TR.CashInterestPaid(Period='+iPeriod+')',
                       'TR.CashTaxesPaid(Period='+iPeriod+')',
                       'TR.ChangesInWorkingCapital(Period='+iPeriod+')',
                       'TR.AcquisitionOfBusiness(Period='+iPeriod+')',
+                      'TR.SaleOfBusiness(Period='+iPeriod+')',
                       'TR.PurchaseOfInvestments(Period='+iPeriod+')',
                       'TR.LTDebtReduction(Period='+iPeriod+')',
-                      'TR.STDebtReduction(Period='+iPeriod+')'],
+                      'TR.STDebtReduction(Period='+iPeriod+')',
+                      'TR.SaleMaturityofInvestment(Period='+iPeriod+')',
+                      'TR.RepurchaseRetirementOfCommon(Period='+iPeriod+')',
+                      'TR.TotalCashDividendsPaid(Period='+iPeriod+')',
+                      'TR.NetCashEndingBalance(Period='+iPeriod+')',
+                      'TR.NetCashBeginningBalance(Period='+iPeriod+')',
+                      'TR.CashFromOperatingActivities(Period='+iPeriod+')',
+                      'TR.CashFromInvestingActivities(Period='+iPeriod+')',
+                      'TR.CashFromFinancingActivities(Period='+iPeriod+')'],
                      raw_output=True)
     return [oLabels,df]
 
 def double_check_FY_data(iTicker,iPeriod,ioJsonData):
-    if ioJsonData['EBITDA'] == 0.0:
+    if ioJsonData['IncomeStatement']['EBITDA'] == 0.0:
         df = ek.get_data(iTicker, 'TR.EBITDA(Period='+iPeriod+')',raw_output=True)
-        ioJsonData['EBITDA']=FloatOrZero(df['data'][0][1])
-    if ioJsonData['EBIT'] == 0.0:
+        ioJsonData['IncomeStatement']['EBITDA']=FloatOrZero(df['data'][0][1])
+    if ioJsonData['IncomeStatement']['EBIT'] == 0.0:
         df = ek.get_data(iTicker, 'TR.EBIT(Period='+iPeriod+')',raw_output=True)
-        ioJsonData['EBIT']=FloatOrZero(df['data'][0][1])
+        ioJsonData['IncomeStatement']['EBIT']=FloatOrZero(df['data'][0][1])
     return ioJsonData
 
 def retrieve_fiscal_year_data(iEikonTicker):
     print("retrieve_fiscal_year_data")
     aFiscalYears=['FY-3','FY-2','FY-1','FY0']
-    aFYDataDict={}
+    aFYDataDict= collections.defaultdict(dict)
     oListJson={}
     aFYDataDict["Estimated"]="false"
-
     #Obtain last reported Fiscal Year date
     df = ek.get_data(iEikonTicker,'TR.EBITDA(Period=FY0).periodenddate',raw_output=True)
     aLastFYEnd=df['data'][0][1].split("-")
@@ -476,62 +553,107 @@ def retrieve_fiscal_year_data(iEikonTicker):
     aFY0=aLastFYEnd.year-len(aFiscalYears)+1
     for fy in aFiscalYears:
         #NOTE:Historic fiscal year price close
+
         aLabels,df = retrieve_eikon_reports(iEikonTicker, fy)
         #Get array of all data
         aDfLen=len(df['data'][0])-1
         aFYJson={"FY"+str(aFY0):{}}
         for idx in range(0,aDfLen):
-            aFYDataDict[aLabels[idx]]=FloatOrZero(df['data'][0][idx+1])
+            aFYDataDict[aLabels[idx][1]][aLabels[idx][0]]=FloatOrZero(df['data'][0][idx+1])
         double_check_FY_data(iEikonTicker,fy,aFYDataDict)
-        aFYJson["FY"+str(aFY0)]=aFYDataDict
+        aFYJson["FY"+str(aFY0)]=dict(aFYDataDict)
         oListJson.update(copy.deepcopy(aFYJson))
         aFY0=aFY0+1
-
-    print(oListJson)
     return oListJson
 
 def retrieve_eikon_estimates(iEikonTicker, iPeriod):
-    aLabels=["TotalRevenueMean",
-             "EPSSmart",
-             "EPSMean",
-             "EVMean",
-             "DPSMean",
-             "DPSSmart",
-             "EBITDASmart",
-             "EBITDAMean",
-             "EBITSmart",
-             "EBITMean",
-             "EV/EBITDASmart",
-             "FwdEV/EBITDASmart",
-             "FwdEV/EBITSmart",
-             "NetDebtMean",
-             "PESmart",
-             "GrossIncomeMean"]
-
+    aLabels=collections.OrderedDict({'GrossIncomeMean':'IncomeStatement',
+             'TotalRevenueMean':'IncomeStatement',
+             'EPSSmart':'IncomeStatement',
+             'EPSMean':'IncomeStatement',
+             'DPSMean':'IncomeStatement',
+             'DPSSmart':'IncomeStatement',
+             'EBITDASmart':'IncomeStatement',
+             'EBITDAMean':'IncomeStatement',
+             'EBITSmart':'IncomeStatement',
+             'EBITMean':'IncomeStatement',
+             'ProvisionForIncomeTaxes':'IncomeStatement',
+             'NetIncomeBeforeExtra':'IncomeStatement',
+             'NetIncome':'IncomeStatement',
+             'TotalDebtMean': 'BalanceSheet',
+             'NetDebtMean': 'BalanceSheet',
+             'CashAndEquivalents': 'BalanceSheet',
+             'CurrentAssets': 'BalanceSheet',
+             'DeferredRevenue':'BalanceSheet',
+             'CurrentLiabilities':'BalanceSheet',
+             'GoodwillMean':'BalanceSheet',
+             'InventoryMean':'BalanceSheet',
+             'InventorySmartEst':'BalanceSheet',
+             'ShareholderEquity':'BalanceSheet',
+             'TotalAssets':'BalanceSheet',
+             'CashFromOperatingActivities':'CashFlow',
+             'FreeCashFlowMean':'CashFlow',
+             'IntExpMean':'CashFlow',
+             'CAPEXMean':'CashFlow',
+             'DividendsPaid':'CashFlow',
+             'CashFromFinancingActivities':'CashFlow',
+             'CashFromInvestingActivities':'CashFlow',
+             'NetWorkingCapMean':'CashFlow',
+             'EV/EBITDASmart':'Other',
+             'FwdEV/EBITDASmart':'Other',
+             'FwdEV/EBITSmart':'Other',
+             'PESmart':'Other',
+             'EVMean': 'Other',
+             'GrossMarginMean':'Other',
+             'GrossMarginSmart':'Other'})
+    oLabels=list(aLabels.items())
     df = ek.get_data(iEikonTicker,
-                     ['TR.RevenueMean(Period='+iPeriod+')',
+                     ['TR.GrossIncomeMean(Period='+iPeriod+')',
+                      'TR.RevenueMean(Period='+iPeriod+')',
                       'TR.EpsSmartEst(Period='+iPeriod+')',
                       'TR.EPSMean(Period='+iPeriod+')',
-                      'TR.EVMean(Period='+iPeriod+')',
                       'TR.DPSMean(Period='+iPeriod+')',
                       'TR.DPSSmartEst(Period='+iPeriod+')',
                       'TR.EBITDASmartEst(Period='+iPeriod+')',
                       'TR.EBITDAMean(Period='+iPeriod+')',
                       'TR.EBITSmartEst(Period='+iPeriod+')',
                       'TR.EBITMean(Period='+iPeriod+')',
+                      'TR.TaxProvisionMean(Period='+iPeriod+')',
+                      'TR.NetIncomeMean(Period='+iPeriod+')',
+                      'TR.RepNetProfitMean(Period='+iPeriod+')',
+                      'TR.TotalDebtMean(Period='+iPeriod+')',
+                      'TR.NetDebtMean(Period='+iPeriod+')',
+                      'TR.Cash&EquivalentsMean(Period='+iPeriod+')',
+                      'TR.CurrentAssetsMean(Period='+iPeriod+')',
+                      'TR.DeferredRevenueMean(Period='+iPeriod+')',
+                      'TR.CurrentLiabilitiesMean(Period='+iPeriod+')',
+                      'TR.GoodwillMean(Period='+iPeriod+')',
+                      'TR.InventoryMean(Period='+iPeriod+')',
+                      'TR.InventorySmartEst(Period='+iPeriod+')',
+                      'TR.ShareholdersEquityMean(Period='+iPeriod+')',
+                      'TR.TotalAssetsMean(Period='+iPeriod+')',
+                      'TR.CashFlowfromOperationsMean(Period='+iPeriod+')',
+                      'TR.FCFMean(Period='+iPeriod+')',
+                      'TR.IntExpMean(Period='+iPeriod+')',
+                      'TR.CAPEXMean(Period='+iPeriod+')',
+                      'TR.TotalDividendsMean(Period='+iPeriod+')',
+                      'TR.CashFlowfromFinancingMean(Period='+iPeriod+')',
+                      'TR.CashFlowfromInvestingMean(Period='+iPeriod+')',
+                      'TR.NWCMean(Period='+iPeriod+')',
                       'TR.EVtoEBITDASmartEst(Period='+iPeriod+')',
                       'TR.FwdEVtoEBTSmartEst(Period='+iPeriod+')',
                       'TR.FwdEVtoEBISmartEst(Period='+iPeriod+')',
-                      'TR.NetDebtMean(Period='+iPeriod+')',
                       'TR.FwdPtoEPSSmartEst(Period='+iPeriod+')',
-                      'TR.GrossIncomeMean(Period='+iPeriod+')'],
+                      'TR.EVMean(Period='+iPeriod+')',
+                      'TR.GPMMean(Period='+iPeriod+')',
+                      'TR.GPMSmartEst(Period='+iPeriod+')'],
                      raw_output=True)
-    return [aLabels,df]
+    return [oLabels,df]
 
 def retrieve_estimated_fiscal_year_data(iEikonTicker):
     print("retrieve_estimated_fiscal_year_data")
     aFiscalYears=['FY1','FY2','FY3']
-    aFYDataDict={}
+    aFYDataDict=collections.defaultdict(dict)
     aFYDataDict["Estimated"]="true"
     oListJson={}
     df = ek.get_data(iEikonTicker,'TR.EPSMean(Period=FY1).periodenddate',raw_output=True)
@@ -551,8 +673,8 @@ def retrieve_estimated_fiscal_year_data(iEikonTicker):
         aDfLen=len(df['data'][0])-1
         aFYJson={"FY"+str(aFY1):{}}
         for idx in range(0,aDfLen):
-            aFYDataDict[aLabels[idx]]=FloatOrZero(df['data'][0][idx+1])
-        aFYJson["FY"+str(aFY1)]=aFYDataDict
+            aFYDataDict[aLabels[idx][1]][aLabels[idx][0]]=FloatOrZero(df['data'][0][idx+1])
+        aFYJson["FY"+str(aFY1)]=dict(aFYDataDict)
         oListJson.update(copy.deepcopy(aFYJson))
         #print(oListJson)
         aFY1=aFY1+1
@@ -561,40 +683,27 @@ def retrieve_estimated_fiscal_year_data(iEikonTicker):
 def retrieve_fiscal_quarter_data(iEikonTicker):
     print("quarterly data")
     aFiscalQuarters=['FQ-3','FQ-2','FQ-1','FQ0','FQ1','FQ2','FQ3','FQ4']
-    aFQDataDict={}
-    oListJson={}
+    aFQDataDict=collections.defaultdict(dict)
+    oListJson={"DataByFiscalQuarter":{}}
     for fq in aFiscalQuarters:
         aFQDataDict.clear()
         if fq in aFiscalQuarters[0:4]:
             aFQDataDict["Estimated"]="false"
-            aFQDataDict["PeriodEndDate"]="false"
-            aPeriod = ek.get_data(iEikonTicker,['TR.EBITDA(Period='+fq+').fperiod','TR.EBITDA(Period='+fq+').periodenddate'],raw_output=True)
-            aQuarter=aPeriod['data'][0][1]
-            aQuarterEndDate=aPeriod['data'][0][2]
-            if aQuarter == '':
-                aPeriod = ek.get_data(iEikonTicker,['TR.EBITDAActValue(Period='+fq+').fperiod', 'TR.EBITDAActValue(Period='+fq+').periodenddate'],raw_output=True)
-                aQuarter=aPeriod['data'][0][1]
-                aQuarterEndDate=aPeriod['data'][0][2]
+            aQuarter,aQuarterEndDate = get_fiscal_quarter_end_date(iEikonTicker, fq, False)
             aLabels,df = retrieve_eikon_reports(iEikonTicker, fq)
         else:
             aFQDataDict["Estimated"]="true"
-            aPeriod = ek.get_data(iEikonTicker,['TR.EPSMean(Period='+fq+').fperiod','TR.EPSMean(Period='+fq+').periodenddate'],raw_output=True)
-            aQuarter=aPeriod['data'][0][1]
-            aQuarterEndDate=aPeriod['data'][0][2]
-            if aQuarter == ['']:
-                aPeriod = ek.get_data(iEikonTicker,['TR.EpsSmartEst(Period='+fq+').fperiod','TR.EpsSmartEst(Period='+fq+').periodenddate'],raw_output=True)
-                aQuarter=aPeriod['data'][0][1]
-                aQuarterEndDate=aPeriod['data'][0][2]
+            aQuarter,aQuarterEndDate = get_fiscal_quarter_end_date(iEikonTicker, fq, True)
             aLabels,df = retrieve_eikon_estimates(iEikonTicker, fq)
         #First elem of df is always the company name, we dont need it for len
         aDfLen=len(df['data'][0])-1
         aFYJson={str(aQuarter):{}}
 
         for idx in range(0,aDfLen):
-            aFQDataDict[aLabels[idx]]=FloatOrZero(df['data'][0][idx+1])
-        aFYJson[str(aQuarter)]=aFQDataDict
+            aFQDataDict[aLabels[idx][1]][aLabels[idx][0]]=FloatOrZero(df['data'][0][idx+1])
+        aFYJson[str(aQuarter)]=dict(aFQDataDict)
         aFYJson[str(aQuarter)]["PeriodEndDate"]=aQuarterEndDate
-        oListJson.update(copy.deepcopy(aFYJson))
+        oListJson["DataByFiscalQuarter"].update(copy.deepcopy(aFYJson))
     #print(oListJson)
     return oListJson
 
@@ -666,18 +775,8 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         aEikonTickers=retrieve_eikon_file('IBEX35.txt')
         #delete_ticker_data(model,["BetaWklyUp3Y","DailyUpdated"],aEikonTickers)
         #get_all_eikon_data(model,aEikonTickers)
-        retrieve_fiscal_year_data("AAPL.O")
-        #wrongTickers=[]
-        #for aTicker in aEikonTickers:
-        #    try:
-        #        print(aTicker)
-        #        update_ticker_function(model, retrieve_fiscal_year_data, aTicker)
-        #    except KeyboardInterrupt:
-        #        sys.exit(0)
-        #    except:
-        #        wrongTickers.append(aTicker)
-        #        print(wrongTickers)
-        #        continue
+        #retrieve_fiscal_quarter_data('AAPL.O')
+        update_ticker_function(model, retrieve_fiscal_quarter_data, aEikonTickers)
         #print(wrongTickers)
         #print(get_competitors('AAPL.O'))
         #get_business_summary('AAPL.O')
@@ -737,6 +836,8 @@ def update_ticker_function(iModel, iEikonFunction, aEikonTickers):
             data = iModel.read_by_ticker(aTicker)
             id = data['_id']
             updatedData=iEikonFunction(aTicker)
+            print(updatedData)
+            updatedData["LastModified"]= datetime.utcnow()
             data.update(updatedData)
             iModel.update(data,str(id))
         except KeyboardInterrupt:
