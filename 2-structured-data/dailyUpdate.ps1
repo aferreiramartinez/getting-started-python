@@ -3,5 +3,3 @@ env\scripts\activate
 pip install lxml
 pip install -r requirements.txt
 python test.py
-
-python test.py

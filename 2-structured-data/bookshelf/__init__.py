@@ -774,36 +774,13 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
         #Eikon all tickers
         aEikonTickers=retrieve_eikon_file('IBEX35.txt')
         #delete_ticker_data(model,["BetaWklyUp3Y","DailyUpdated"],aEikonTickers)
-        #get_all_eikon_data(model,aEikonTickers)
+        get_all_eikon_data(model,aEikonTickers)
         #retrieve_fiscal_quarter_data('AAPL.O')
-        update_ticker_function(model, retrieve_fiscal_quarter_data, aEikonTickers)
+        #update_ticker_function(model, retrieve_fiscal_quarter_data, aEikonTickers)
         #print(wrongTickers)
         #print(get_competitors('AAPL.O'))
         #get_business_summary('AAPL.O')
 
-
-    # Register the Bookshelf CRUD blueprint.
-    from .crud import crud
-
-    # a blueprint is a set of operations which can be registered on an application
-    # Flask associates view functions with blueprints when dispatching requests and
-    # generating URLs from one endpoint to another
-    app.register_blueprint(crud, url_prefix='/books')
-
-    # Add a default root route.
-    @app.route("/")
-    def index():
-        return redirect(url_for('crud.list'))
-
-    # Add an error handler. This is useful for debugging the live application,
-    # however, you should disable the output of the exception for production
-    # applications.
-    @app.errorhandler(500)
-    def server_error(e):
-        return """
-        An internal error occurred: <pre>{}</pre>
-        See logs for full stacktrace.
-        """.format(e), 500
     return app
 
 
