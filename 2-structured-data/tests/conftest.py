@@ -14,7 +14,7 @@
 
 """conftest.py is used to define common test fixtures for pytest."""
 
-import bookshelf
+import database
 import config
 from google.cloud.exceptions import ServiceUnavailable
 from oauth2client.client import HttpAccessTokenRefreshError
@@ -32,7 +32,7 @@ def app(request):
 
     It also ensures the tests run within a request context, allowing
     any calls to flask.request, flask.current_app, etc. to work."""
-    app = bookshelf.create_app(
+    app = database.create_app(
         config,
         testing=True,
         config_overrides={
@@ -57,7 +57,7 @@ def model(monkeypatch, app):
     The app fixture is needed to provide the configuration and context needed
     to get the proper model object.
     """
-    model = bookshelf.get_model()
+    model = database.get_model()
 
     # Ensure no books exist before running. This typically helps if tests
     # somehow left the database in a bad state.

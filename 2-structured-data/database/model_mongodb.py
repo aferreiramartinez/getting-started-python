@@ -1,12 +1,11 @@
 from bson.objectid import ObjectId
-from flask.ext.pymongo import PyMongo
-
+from . import config
+import pymongo
 
 builtin_list = list
-
-
-mongo = PyMongo()
-
+connection = pymongo.MongoClient(config.DB_HOST, config.DB_PORT)
+db = connection[config.DB_NAME]
+db.authenticate(config.DB_USER, config.DB_PASS)
 
 def _id(id):
     if not isinstance(id, ObjectId):
@@ -28,10 +27,6 @@ def from_mongo(data):
 # [END from_mongo]
 
 
-def init_app(app):
-    mongo.init_app(app)
-
-
 # # [START list]
 # def list(limit=10, cursor=None):
 #     cursor = int(cursor) if cursor else 0
@@ -49,28 +44,29 @@ def init_app(app):
 
 # [START read]
 def read(id):
-    result = mongo.db.eikonTwo.find_one(_id(id))
+    result = db.eikonTwo.find_one(_id(id))
     return from_mongo(result)
 # [END read]
 
 def read_by_ticker(iEikonTicker):
-    result = mongo.db.eikonTwo.find_one({ "EikonTicker": iEikonTicker })
+    result = db.eikonTwo.find_one({ "EikonTicker": iEikonTicker })
     return from_mongo(result)
 
 def read_all():
-    cursor = mongo.db.eikonTwo.find({})
+    cursor = db.eikonTwo.find({})
     return from_mongo(cursor)
 
 # [START create]
 def create(data):
-    new_id = mongo.db.eikonTwo.insert(data)
+    print('create mongo')
+    new_id = db.eikonTwo.insert(data)
     return read(new_id)
 # [END create]
 
 
 # [START update]
 def update(data, id):
-    mongo.db.eikonTwo.update({'_id': _id(id)}, data)
+    db.eikonTwo.update({'_id': _id(id)}, data)
     return read(id)
 # [END update]
 

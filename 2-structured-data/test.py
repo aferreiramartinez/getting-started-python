@@ -136,6 +136,7 @@ def get_minority_interest(iEikonTicker):
                                     'TR.CurrentPortionLTDebtToCapitalLeases(Period='+iPeriod+')',
                                     'TR.TotalLiabilitiesAndShareholdersEquity(Period='+iPeriod+')'
                                     ], raw_output=True)
+    print(df)
     end = time.time()
     print(end - start)
     return aMinInterest
