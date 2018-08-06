@@ -132,6 +132,7 @@ def get_daily_updates(iEikonTicker):
     return oDailyJson
 
 def get_competitors(iEikonTicker):
+    # ISIN (or CUSIP) represent a financial instrument, whereas RICs represent a financial instrument on a specific market
     print("competitors")
     aIndex=1
     oDailyJson={"Competitors":[]}
@@ -144,6 +145,25 @@ def get_competitors(iEikonTicker):
         oDailyJson["Competitors"].append(copy.deepcopy(aJson))
         aIndex += 1
     return oDailyJson
+
+#We need:
+#TR.FiMoodysRating
+#TR.FiSPRating
+
+def get_bonds(iEikonTicker):
+    print("bonds")
+    aLabels=['BetaWkly3Y',
+             'BetaWklyUp3Y',
+             'BetaWklyDown3Y',
+             'BetaWkly2Y',
+             'BetaWklyUp2Y',
+             'BetaWklyDown2Y']
+    isins=[]
+    isinListRaw = ek.get_data(iEikonTicker,'TR.BondISIN',raw_output=True)
+    for isin in isinListRaw["data"]:
+        isins.append(isin[1])
+    df = ek.get_data(isins,['TR.CouponRate','TR.FiMaturityDate','Tr.FiAssetTypeDescription','TR.FiMaturityStandardYield'],raw_output=True)
+    print ()
 
 def get_minority_interest(iEikonTicker):
     print("min interest")
@@ -391,6 +411,7 @@ def retrieve_eikon_estimates(iEikonTicker, iPeriod):
                                      'InventorySmartEst':'BalanceSheet',
                                      'ShareholderEquity':'BalanceSheet',
                                      'TotalAssets':'BalanceSheet',
+                                     'NetWorkingCapital':'CashFlow',
                                      'CashFromOperatingActivities':'CashFlow',
                                      'FreeCashFlowMean':'CashFlow',
                                      'IntExpMean':'CashFlow',
@@ -432,6 +453,7 @@ def retrieve_eikon_estimates(iEikonTicker, iPeriod):
                       'TR.InventorySmartEst(Period='+iPeriod+')',
                       'TR.ShareholdersEquityMean(Period='+iPeriod+')',
                       'TR.TotalAssetsMean(Period='+iPeriod+')',
+                      'TR.NWCMean(Period='+iPeriod+')',
                       'TR.CashFlowfromOperationsMean(Period='+iPeriod+')',
                       'TR.FCFMean(Period='+iPeriod+')',
                       'TR.IntExpMean(Period='+iPeriod+')',
@@ -489,12 +511,12 @@ def retrieve_estimated_fiscal_year_data(iEikonTicker):
 
 def retrieve_fiscal_quarter_data(iEikonTicker):
     print("quarterly data")
-    aFiscalQuarters=['FQ-3','FQ-2','FQ-1','FQ0','FQ1','FQ2','FQ3','FQ4']
+    aFiscalQuarters=['FQ-13','FQ-12','FQ-11','FQ-10','FQ-9','FQ-8','FQ-7','FQ-6','FQ-5','FQ-4','FQ-3','FQ-2','FQ-1','FQ0','FQ1','FQ2','FQ3','FQ4']
     aFQDataDict=collections.defaultdict(dict)
     oListJson={"DataByFiscalQuarter":{}}
     for fq in aFiscalQuarters:
         aFQDataDict.clear()
-        if fq in aFiscalQuarters[0:4]:
+        if fq in aFiscalQuarters[0:14]:
             aFQDataDict["Estimated"]="false"
             aQuarter,aQuarterEndDate = get_fiscal_quarter_end_date(iEikonTicker, fq, False)
             aLabels,df = retrieve_eikon_reports(iEikonTicker, fq)
