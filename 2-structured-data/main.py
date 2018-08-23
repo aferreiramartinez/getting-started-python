@@ -147,9 +147,11 @@ def get_all_eikon_data(aMongoDBModel,iEikonTickers,file):
 
 def update_ticker_function(iModel, iEikonFunction, aEikonTickers):
     from database import model_mongodb
+    print('update')
     wrongTickers=[]
     for aTicker in aEikonTickers:
         try:
+            print(aTicker)
             data = iModel.read_by_ticker(aTicker)
             id = data['_id']
             updatedData=iEikonFunction(aTicker)
@@ -168,24 +170,40 @@ def update_ticker_function(iModel, iEikonFunction, aEikonTickers):
 
 def earnings_power(iModel, aEikonTickers):
     wrongTickers=[]
-    f= open("guru99.txt","w+")
+    file = open("guru99.csv","w")
+    eps_data={}
     for aTicker in aEikonTickers:
         try:
+            dividends = epsL12M = eps3Y = epsExtraL12M = epsExtra3Y = 0
             data = iModel.read_by_ticker(aTicker)
-            ticker = aTicker
-            print(data["DataByFiscalYear"])
-            per2017 = data["DataByFiscalQuarter"]["FY2017Q4"]["EPS"]
-            per2017 = data["DataByFiscalQuarter"]["FY2017Q3"]["EPS"]
-            per2017 = data["DataByFiscalQuarter"]["FY2017Q2"]["EPS"]
-            per2017 = data["DataByFiscalQuarter"]["FY2017Q1"]["EPS"]
-            per2015 = data["DataByFiscalYear"]["FY2017"]["EPS"]
-            eps2015 = data["DataByFiscalYear"]["FY2015"]["EPS"]
-            eps2014 = data["DataByFiscalYear"]["FY2015"]["EPS"]
-            price2017 = data["120MonthSharePrice"]["2017-09"]
-            price2014 = data["120MonthSharePrice"]["2014-09"]
-            a= aTicker+","+eps2017+","+eps2014+","+price2017+","+price2014+"\n"
-            print(a)
-            f.write(aTicker+","+eps2017+","+eps2014+","+price2017+","+price2014+"\n")
+            #Take the last 12 values that have estimated = false
+            orderedData = collections.OrderedDict(sorted(data["DataByFiscalQuarter"].items()))
+            fqs = [v for v in orderedData.values() if 'false' in v.values()][-16:]
+            #price_now = fqs[-1]["Other"]["P/E"]*fqs[-1]["IncomeStatement"]["EPS"]
+            #price_3Y_ago = fqs[3]["Other"]["P/E"]*fqs[3]["IncomeStatement"]["EPS"]
+
+            date_now=fqs[-1]["PeriodEndDate"][:-3]
+            price_now=data["120MonthSharePrice"][date_now]["PriceClose"]
+            date_3Y=fqs[3]["PeriodEndDate"][:-3]
+            price_3Y_ago=data["120MonthSharePrice"][date_3Y]["PriceClose"]
+
+            #Sum dividends of last 3Y
+            for idx in range(12):
+                dividends += fqs[idx+4]["IncomeStatement"]["DPS"]
+
+            #Sum EPS of last 12Months
+            for idx in range(4):
+                epsL12M += fqs[len(fqs)-1-idx]["IncomeStatement"]["EPS"]
+                epsExtraL12M += fqs[len(fqs)-1-idx]["IncomeStatement"]["EPSInclExtra"]
+
+            #Sum EPS of 12 months 3Y ago
+            for idx in range(4):
+                eps3Y += fqs[idx]["IncomeStatement"]["EPS"]
+                epsExtra3Y += fqs[idx]["IncomeStatement"]["EPSInclExtra"]
+
+            a= aTicker+','+str(price_now)+','+str(price_3Y_ago)+','+str(dividends)+','+str(epsL12M)+','+str(eps3Y)+','+str(epsExtraL12M)+','+str(epsExtra3Y)
+            #print(a)
+            file.write(a+"\n")
         except KeyboardInterrupt:
             sys.exit(0)
         except Exception as e:
@@ -193,6 +211,8 @@ def earnings_power(iModel, aEikonTickers):
             print(wrongTickers)
             print(e)
             continue
+    file.close()
+
 
 def recursive_update(d,u):
     for k, v in u.items():
@@ -228,8 +248,6 @@ def delete_ticker_data(iModel, iKeyListToBeRemoved, aEikonTickers):
     print(wrongTickers)
     return data
 
-
-
 if __name__ == '__main__':
     model = model_mongodb
 
@@ -238,11 +256,12 @@ if __name__ == '__main__':
     aEikonTickers=retrieve_eikon_file(file)
 
     #delete_ticker_data(model,["BetaWklyUp3Y","DailyUpdated"],aEikonTickers)
-    get_all_eikon_data(model,aEikonTickers,file)
-    #ekLib.retrieve_fiscal_year_data('AMA.MC')
+    #get_all_eikon_data(model,aEikonTickers,file)
+    #ekLib.get_120_month_share_price(aEikonTickers)
+    #ekLib.retrieve_eikon_reports('AAPL.O','FY','5')
     #ekLib.get_bonds('AAPL.O')
-    #update_ticker_function(model, ekLib.retrieve_fiscal_year_data, aEikonTickers)
-    #earnings_power(model,aEikonTickers)
+    #update_ticker_function(model, ekLib.get_120_month_share_price, aEikonTickers)
+    earnings_power(model,aEikonTickers)
     #print(wrongTickers)
     #print(get_competitors('AAPL.O'))
 
