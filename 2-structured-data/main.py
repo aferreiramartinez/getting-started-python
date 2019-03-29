@@ -7,9 +7,7 @@ import eikon as ek
 import pandas as pd
 import collections
 
-#ek.set_app_id('9FB32FA719C8F1EE8CDEF1A')
 ek.set_app_id('80a60244246c4c139ea016a0c9dde616194983de')
-#pd.set_option('display.max_columns', 10000)
 pd.options.display.max_colwidth = 10000
 
 def retrieve_eikon_file(iFileName):
@@ -86,28 +84,28 @@ def get_all_eikon_data(aMongoDBModel,iEikonTickers,file):
             aEikonAllData.update(aCompanyName)
 
             #Company description
-            #aBusinessSummary = ekLib.get_business_summary(aEikonTicker)
-            #aEikonAllData.update(aBusinessSummary)
+            aBusinessSummary = ekLib.get_business_summary(aEikonTicker)
+            aEikonAllData.update(aBusinessSummary)
 
             #Competitors
-            #aCompetitors = ekLib.get_competitors(aEikonTicker)
-            #aEikonAllData.update(aCompetitors)
+            aCompetitors = ekLib.get_competitors(aEikonTicker)
+            aEikonAllData.update(aCompetitors)
 
             #52 week high/low prices
-            #a52WeekHighLow = ekLib.get_52_week_high_low(aEikonTicker)
-            #aEikonAllData.update(a52WeekHighLow)
+            a52WeekHighLow = ekLib.get_52_week_high_low(aEikonTicker)
+            aEikonAllData.update(a52WeekHighLow)
 
             #Beta info
-            #aListBetas=ekLib.get_betas(aEikonTicker)
-            #aEikonAllData.update(aListBetas)
+            aListBetas=ekLib.get_betas(aEikonTicker)
+            aEikonAllData.update(aListBetas)
 
             #Monthly share price updates
-            #aListMonthlyUpdates=ekLib.get_120_month_share_price(aEikonTicker)
-            #aEikonAllData.update(aListMonthlyUpdates)
+            aListMonthlyUpdates=ekLib.get_120_month_share_price(aEikonTicker)
+            aEikonAllData.update(aListMonthlyUpdates)
 
             # Historic daily price for past year
-            #aListHistoricDailyPrices=ekLib.get_365_day_share_price(aEikonTicker)
-            #aEikonAllData.update(aListHistoricDailyPrices)
+            aListHistoricDailyPrices=ekLib.get_365_day_share_price(aEikonTicker)
+            aEikonAllData.update(aListHistoricDailyPrices)
 
             #Daily price, volume, EV, market cap
             aListDailyUpdates=ekLib.get_daily_updates(aEikonTicker)
@@ -119,16 +117,16 @@ def get_all_eikon_data(aMongoDBModel,iEikonTickers,file):
             #aEikonAllData.update(aMajorOwners[1])
 
             #Major shareholders
-            #aMajorOwners=ekLib.get_major_shareholders(aEikonTicker)
-            #aEikonAllData.update(aMajorOwners)
+            aMajorOwners=ekLib.get_major_shareholders(aEikonTicker)
+            aEikonAllData.update(aMajorOwners)
 
             #Fiscal Year end date
             aFiscalYearEndDate=ekLib.get_fiscal_year_dates(aEikonTicker)
             aEikonAllData.update(aFiscalYearEndDate)
 
             #Fiscal year data
-            #aFiscalYearData=ekLib.get_all_year_data(aEikonTicker)
-            #aEikonAllData.update(aFiscalYearData)
+            aFiscalYearData=ekLib.get_all_year_data(aEikonTicker)
+            aEikonAllData.update(aFiscalYearData)
 
             #Fiscal quarter data
             aFiscalQuarterData=ekLib.retrieve_fiscal_quarter_data(aEikonTicker)
@@ -256,12 +254,13 @@ if __name__ == '__main__':
     aEikonTickers=retrieve_eikon_file(file)
 
     #delete_ticker_data(model,["BetaWklyUp3Y","DailyUpdated"],aEikonTickers)
-    #get_all_eikon_data(model,aEikonTickers,file)
+    get_all_eikon_data(model,aEikonTickers,file)
     #ekLib.get_120_month_share_price(aEikonTickers)
+    #ekLib.get_365_day_share_price('AAPL.O')
     #ekLib.retrieve_eikon_reports('AAPL.O','FY','5')
     #ekLib.get_bonds('AAPL.O')
-    #update_ticker_function(model, ekLib.get_120_month_share_price, aEikonTickers)
-    earnings_power(model,aEikonTickers)
+    #update_ticker_function(model, ekLib.get_fiscal_year_dates, aEikonTickers)
+    #earnings_power(model,aEikonTickers)
     #print(wrongTickers)
     #print(get_competitors('AAPL.O'))
 

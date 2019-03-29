@@ -44,29 +44,29 @@ def from_mongo(data):
 
 # [START read]
 def read(id):
-    result = db.eikon.find_one(_id(id))
+    result = db.eikonThree.find_one(_id(id))
     return from_mongo(result)
 # [END read]
 
 def read_by_ticker(iEikonTicker):
-    result = db.eikon.find_one({ "EikonTicker": iEikonTicker })
+    result = db.eikonThree.find_one({ "EikonTicker": iEikonTicker })
     return from_mongo(result)
 
 def read_all():
-    cursor = db.eikon.find({})
+    cursor = db.eikonThree.find({})
     return from_mongo(cursor)
 
 # [START create]
 def create(data):
     print('create mongo')
-    new_id = db.eikon.insert(data)
+    new_id = db.eikonThree.insert(data)
     return read(new_id)
 # [END create]
 
 
 # [START update]
 def update(data, id):
-    db.eikon.update({'_id': _id(id)}, data)
+    db.eikonThree.update({'_id': _id(id)}, data)
     return read(id)
 # [END update]
 

@@ -26,7 +26,7 @@ def get_business_summary(iEikonTicker):
              'TradedInIdentifier',
              'MemberIndexRic',
              'PriceMainIndexRIC',
-             'MoodysRating']
+             'SPRating']
     df = ek.get_data(iEikonTicker,
                      ['TR.BusinessSummary',
                       'TR.HQCountryCode',
@@ -40,7 +40,7 @@ def get_business_summary(iEikonTicker):
                       'CF_EXCHNG',
                       'TR.MemberIndexRic',
                       'TR.PriceMainIndexRIC',
-                      'TR.IssuerRating'],
+                      'TR.IssuerRating(IssuerRatingSrc=SPI)'],
                      raw_output=True)
     for business in aLabels:
         aBusinessSummaryJson[business]=str(df['data'][0][aStartIndex])
@@ -95,14 +95,16 @@ def get_365_day_share_price(iEikonTicker):
     o365DayPrice={"365DaySharePrice":{}}
     aJson={}
     aPrices=ek.get_data(iEikonTicker, ['TR.PriceClose(SDate=0,EDate=-364,Frq=D)',
+                                       'TR.PriceOpen(SDate=0,EDate=-364,Frq=D)',
                                        'TR.PriceHigh(SDate=0,EDate=-364,Frq=D)',
                                        'TR.PriceLow(SDate=0,EDate=-364,Frq=D)',
                                        'TR.PriceClose(SDate=0,EDate=-364,Frq=D).calcdate'],raw_output=True)
     for aPrice in aPrices['data']:
         aJson["PriceClose"]=FloatOrZero(aPrice[1])
-        aJson["PriceHigh"]=FloatOrZero(aPrice[2])
-        aJson["PriceLow"]=FloatOrZero(aPrice[3])
-        o365DayPrice["365DaySharePrice"][str(aPrice[4])]=copy.deepcopy(aJson)
+        aJson["PriceOpen"]=FloatOrZero(aPrice[2])
+        aJson["PriceHigh"]=FloatOrZero(aPrice[3])
+        aJson["PriceLow"]=FloatOrZero(aPrice[4])
+        o365DayPrice["365DaySharePrice"][str(aPrice[5])]=copy.deepcopy(aJson)
     return o365DayPrice
 
 def get_120_month_share_price(iEikonTicker):
@@ -236,7 +238,6 @@ def get_all_year_data(iEikonTicker):
     aFiscalYearEstimatesData=retrieve_estimated_fiscal_year_data(iEikonTicker)
     oJson["DataByFiscalYear"]=aFiscalYearData
     oJson["DataByFiscalYear"].update(aFiscalYearEstimatesData)
-    print(oJson)
     return oJson
 
 def retrieve_eikon_reports(iEikonTicker, iPeriod , iNumPeriods):
@@ -327,7 +328,6 @@ def retrieve_eikon_reports(iEikonTicker, iPeriod , iNumPeriods):
                       'TR.HistEnterpriseValue',
                       'TR.HistPE',
                       'TR.GrossMargin',
-                      'TR.GrossMargin',
                       'TR.EBITMarginPercent',
                       'TR.EBITDAMarginPercent',
                       'TR.DpsCommonStock',
@@ -363,7 +363,7 @@ def retrieve_eikon_reports(iEikonTicker, iPeriod , iNumPeriods):
                       'TR.EBITDA.periodenddate',
                       'TR.EBITDAActValue.fperiod',
                       'TR.EBITDAActValue.periodenddate'],
-                     {'SDate':'0','EDate':'-'+iNumPeriods,'FRQ':iPeriod,'Period':iPeriod+'0'},
+                     {'SDate':'-'+iNumPeriods,'EDate':'0','FRQ':iPeriod,'Period':iPeriod+'0'},
                      raw_output=True)
     return [oLabels,df]
 
@@ -385,24 +385,24 @@ def retrieve_fiscal_year_data(iEikonTicker):
     aFYDataDict["Estimated"]="false"
 
     #Obtain last reported Fiscal Year date
-    df = ek.get_data(iEikonTicker,'TR.EBITDA(Period=FY0).periodenddate',raw_output=True)
-    aLastFYEnd=df['data'][0][1].split("-")
-    aLastFYEnd=datetime(int(aLastFYEnd[0]),int(aLastFYEnd[1].lstrip("0")),int(aLastFYEnd[2].lstrip("0")))
-    aFY0=aLastFYEnd.year
+    df = ek.get_data(iEikonTicker,'TR.EBITDA(Period=FY0).periodenddate',raw_output=True) #'data': [['AAPL.O', '2018-09-29']]
+    aLastFYEnd=df['data'][0][1].split("-") #['2018', '09', '29']
+    aLastFYEnd=datetime(int(aLastFYEnd[0]),int(aLastFYEnd[1].lstrip("0")),int(aLastFYEnd[2].lstrip("0")))#datetime.datetime(2018, 9, 29, 0, 0)
+    aFY0=aLastFYEnd.year-len(aFiscalYears)+1 #2018-5+1=2014
 
-    aLabels,df = retrieve_eikon_reports(iEikonTicker,'FY',str(numberOfYears))
+    aLabels,df = retrieve_eikon_reports(iEikonTicker,'FY',str(numberOfYears-1))
 
-    for indx,fy in enumerate(aFiscalYears,start=0):
+    for indx,fy in enumerate(aFiscalYears,start=0): # 0 FY-4, 1 FY-3...
         #NOTE:Historic fiscal year price close
-        #Get array of all data, first elem is the ticker which is not needed
+        #Get array of all data, first elem is the ticker which is not needed, last 4 are the period end dates
         aDfLen=len(df['data'][0])-5
         aFYJson={"FY"+str(aFY0):{}}
         for idx in range(0,aDfLen):
-            aFYDataDict[aLabels[idx][1]][aLabels[idx][0]]=FloatOrZero(df['data'][indx][idx+1])
+            aFYDataDict[aLabels[idx][1]][aLabels[idx][0]]=FloatOrZero(df['data'][indx][idx+1]) #'data': [['AAPL.O', 39510000000, 60503000000], ['AAPL.O', 53394000000, 81730000000]...
         double_check_FY_data(iEikonTicker,fy,aFYDataDict)
         aFYJson["FY"+str(aFY0)]=dict(aFYDataDict)
         oListJson.update(copy.deepcopy(aFYJson))
-        aFY0=aFY0-1
+        aFY0=aFY0+1
     return oListJson
 
 def retrieve_eikon_estimates(iEikonTicker, iPeriod, iNumPeriods):
@@ -416,9 +416,9 @@ def retrieve_eikon_estimates(iEikonTicker, iPeriod, iNumPeriods):
                                      'EBITDAMean':'IncomeStatement',
                                      'EBITSmart':'IncomeStatement',
                                      'EBITMean':'IncomeStatement',
-                                     'ProvisionForIncomeTaxes':'IncomeStatement',
-                                     'NetIncomeBeforeExtra':'IncomeStatement',
-                                     'NetIncome':'IncomeStatement',
+                                     'ProvisionForIncomeTaxesMean':'IncomeStatement',
+                                     'NetIncomeBeforeExtraMean':'IncomeStatement',
+                                     'NetIncomeMean':'IncomeStatement',
                                      'TotalDebtMean': 'BalanceSheet',
                                      'NetDebtMean': 'BalanceSheet',
                                      'CashAndEquivalents': 'BalanceSheet',
@@ -429,15 +429,15 @@ def retrieve_eikon_estimates(iEikonTicker, iPeriod, iNumPeriods):
                                      'InventoryMean':'BalanceSheet',
                                      'InventorySmartEst':'BalanceSheet',
                                      'ShareholderEquity':'BalanceSheet',
-                                     'TotalAssets':'BalanceSheet',
+                                     'TotalAssetsMean':'BalanceSheet',
                                      'NetWorkingCapital':'CashFlow',
-                                     'CashFromOperatingActivities':'CashFlow',
+                                     'CashFromOperatingActivitiesMean':'CashFlow',
                                      'FreeCashFlowMean':'CashFlow',
                                      'IntExpMean':'CashFlow',
                                      'CAPEXMean':'CashFlow',
                                      'DividendsPaid':'CashFlow',
-                                     'CashFromFinancingActivities':'CashFlow',
-                                     'CashFromInvestingActivities':'CashFlow',
+                                     'CashFromFinancingActivitiesMean':'CashFlow',
+                                     'CashFromInvestingActivitiesMean':'CashFlow',
                                      'NetWorkingCapMean':'CashFlow',
                                      'EV/EBITDASmart':'Other',
                                      'FwdEV/EBITDASmart':'Other',
@@ -518,7 +518,7 @@ def retrieve_estimated_fiscal_year_data(iEikonTicker):
     aLastFYEnd=datetime(int(aLastFYEnd[0]),int(aLastFYEnd[1].lstrip("0")),int(aLastFYEnd[2].lstrip("0")))
     aFY1=aLastFYEnd.year
     #NOTE:Estimated fiscal year price close
-    aLabels,df = retrieve_eikon_estimates(iEikonTicker,'FY',str(len(aFiscalYears)))
+    aLabels,df = retrieve_eikon_estimates(iEikonTicker,'FY',str(len(aFiscalYears)-1))
     for indx,fy in enumerate(aFiscalYears,start=0):
         #Get array of all data, first parameter is ticker, it isnt needed
         aDfLen=len(df['data'][0])-5
@@ -527,7 +527,6 @@ def retrieve_estimated_fiscal_year_data(iEikonTicker):
             aFYDataDict[aLabels[idx][1]][aLabels[idx][0]]=FloatOrZero(df['data'][indx][idx+1])
         aFYJson["FY"+str(aFY1)]=dict(aFYDataDict)
         oListJson.update(copy.deepcopy(aFYJson))
-        #print(oListJson)
         aFY1=aFY1+1
     return oListJson
 
@@ -538,9 +537,9 @@ def retrieve_fiscal_quarter_data(iEikonTicker):
     aFQDataDict=collections.defaultdict(dict)
     oListJson={"DataByFiscalQuarter":{}}
 
-    #Retrieve data and estimates
-    aLabels,df = retrieve_eikon_reports(iEikonTicker, 'FQ',str(aNumOfQuarters))
-    aEstLabels,estDf = retrieve_eikon_estimates(iEikonTicker, 'FQ',str(aNumOfEstQuarters))
+    #Retrieve data and estimates, we do -1 since {'SDate':'0','EDate':'5'...} will retrieve 6 elems not 5.
+    aLabels,df = retrieve_eikon_reports(iEikonTicker, 'FQ',str(aNumOfQuarters-1))
+    aEstLabels,estDf = retrieve_eikon_estimates(iEikonTicker, 'FQ',str(aNumOfEstQuarters-1))
 
     for qtrIdx in range(aNumOfQuarters):
         aFQDataDict.clear()
