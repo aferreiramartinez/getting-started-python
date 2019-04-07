@@ -168,7 +168,7 @@ def update_ticker_function(iModel, iEikonFunction, aEikonTickers):
 
 def earnings_power(iModel, aEikonTickers):
     wrongTickers=[]
-    file = open("guru99.csv","w")
+    #file = open("guru99.csv","w")
     eps_data={}
     for aTicker in aEikonTickers:
         try:

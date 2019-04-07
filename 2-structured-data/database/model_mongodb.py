@@ -38,35 +38,35 @@ def from_mongo(data):
 #     return (books, next_page)
 # # [END list]
 #
-# def delete(id):
-#     mongo.db.books.remove(_id(id))
+def delete(id):
+    db.eikonTwo.remove(_id(id))
 
 
 # [START read]
 def read(id):
-    result = db.eikonThree.find_one(_id(id))
+    result = db.eikonTwo.find_one(_id(id))
     return from_mongo(result)
 # [END read]
 
 def read_by_ticker(iEikonTicker):
-    result = db.eikonThree.find_one({ "EikonTicker": iEikonTicker })
+    result = db.eikonTwo.find_one({ "EikonTicker": iEikonTicker })
     return from_mongo(result)
 
 def read_all():
-    cursor = db.eikonThree.find({})
+    cursor = db.eikonTwo.find({})
     return from_mongo(cursor)
 
 # [START create]
 def create(data):
     print('create mongo')
-    new_id = db.eikonThree.insert(data)
+    new_id = db.eikonTwo.insert(data)
     return read(new_id)
 # [END create]
 
 
 # [START update]
 def update(data, id):
-    db.eikonThree.update({'_id': _id(id)}, data)
+    db.eikonTwo.update({'_id': _id(id)}, data)
     return read(id)
 # [END update]
 
