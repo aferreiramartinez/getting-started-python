@@ -1,0 +1,487 @@
+CHRW - C.H. Robinson Worldwide Inc
+AJG - Arthur J Gallagher & Co
+CNP - CenterPoint Energy Inc
+WM - Waste Management Inc
+PRGO - Perrigo Company PLC
+BA - Boeing Co
+CBOE - Cboe Global Markets Inc
+WY - Weyerhaeuser Co
+MCD - Mcdonald's Corp
+HD - Home Depot Inc
+SPG - Simon Property Group Inc
+HBAN - Huntington Bancshares Inc
+QRVO - Qorvo Inc
+COG - Cabot Oil & Gas Corp
+AIG - American International Group Inc
+FOXA - Fox Corp
+AIZ - Assurant Inc
+COST - Costco Wholesale Corp
+CBS - CBS Corp
+MCO - Moody's Corp
+DIS - Walt Disney Co
+PAYX - Paychex Inc
+DHI - D.R. Horton Inc
+TRV - Travelers Companies Inc
+MOS - Mosaic Co
+BWA - BorgWarner Inc
+WDC - Western Digital Corp
+VTR - Ventas Inc
+IVZ - Invesco Ltd
+AMAT - Applied Materials Inc
+STX - Seagate Technology PLC
+SYK - Stryker Corp
+VRSN - Verisign Inc
+LB - L Brands Inc
+LOW - Lowe's Companies Inc
+BSX - Boston Scientific Corp
+SYY - Sysco Corp
+FCX - Freeport-McMoRan Inc
+MAS - Masco Corp
+BEN - Franklin Resources Inc
+CELG - Celgene Corp
+REG - Regency Centers Corp
+FB - Facebook Inc
+EXPD - Expeditors International of Washington Inc
+EXPE - Expedia Group Inc
+FLR - Fluor Corp
+AIV - Apartment Investment and Management Co
+NWL - Newell Brands Inc
+RJF - Raymond James Financial Inc
+CL - Colgate-Palmolive Co
+UNH - UnitedHealth Group Inc
+COTY - Coty Inc
+ARE - Alexandria Real Estate Equities Inc
+UAA - Under Armour Inc
+TIF - Tiffany & Co
+SYMC - Symantec Corp
+LLY - Eli Lilly and Co
+ISRG - Intuitive Surgical Inc
+AVB - AvalonBay Communities Inc
+PVH - PVH Corp
+SIG - Signet Jewelers Ltd
+TPR - Tapestry Inc
+ADS - Alliance Data Systems Corp
+CBG - CBRE Group Inc
+CINF - Cincinnati Financial Corp
+RTN - Raytheon Co
+SEE - Sealed Air Corp
+GT - Goodyear Tire & Rubber Co
+WMB - Williams Companies Inc
+HON - Honeywell International Inc
+EA - Electronic Arts Inc
+SRCL - Stericycle Inc
+KORS - Capri Holdings Ltd
+CB - Chubb Ltd
+TXN - Texas Instruments Inc
+MDLZ - Mondelez International Inc
+BLL - Ball Corp
+PFG - Principal Financial Group Inc
+PCG - PG&E Corp
+FOX - Fox Corp
+RL - Ralph Lauren Corp
+JPM - JPMorgan Chase & Co
+RMD - Resmed Inc
+NOV - National Oilwell Varco Inc
+NAVI - Navient Corp
+CMG - Chipotle Mexican Grill Inc
+PCAR - Paccar Inc
+CHTR - Charter Communications Inc
+PWR - Quanta Services Inc
+CCL - Carnival Corp
+PM - Philip Morris International Inc
+COO - Cooper Companies Inc
+SNA - Snap-On Inc
+ESS - Essex Property Trust Inc
+KHC - Kraft Heinz Co
+JBHT - J B Hunt Transport Services Inc
+CMI - Cummins Inc
+PNR - Pentair PLC
+KSS - Kohls Corp
+AGN - Allergan plc
+PDCO - Patterson Companies Inc
+HPQ - HP Inc
+TGT - Target Corp
+NTAP - NetApp Inc
+OXY - Occidental Petroleum Corp
+FBHS - Fortune Brands Home & Security Inc
+EMN - Eastman Chemical Co
+AZO - Autozone Inc
+TEL - TE Connectivity Ltd
+FRT - Federal Realty Investment Trust
+DUK - Duke Energy Corp
+KMI - Kinder Morgan Inc
+DVN - Devon Energy Corp
+RCL - Royal Caribbean Cruises Ltd
+MYL - Mylan NV
+CAH - Cardinal Health Inc
+AAL - American Airlines Group Inc
+MKC - McCormick & Company Inc
+VLO - Valero Energy Corp
+LH - Laboratory Corporation of America Holdings
+DRI - Darden Restaurants Inc
+MAA - Mid-America Apartment Communities Inc
+JNJ - Johnson & Johnson
+ABC - AmerisourceBergen Corp
+SHW - Sherwin-Williams Co
+GD - General Dynamics Corp
+SBAC - SBA Communications Corp
+COP - ConocoPhillips
+ORCL - Oracle Corp
+AMP - Ameriprise Financial Inc
+GRMN - Garmin Ltd
+TXT - Textron Inc
+ALXN - Alexion Pharmaceuticals Inc
+MAC - Macerich Co
+T - AT&T Inc
+NDAQ - Nasdaq Inc
+FFIV - F5 Networks Inc
+SLG - SL Green Realty Corp
+LEN - Lennar Corp
+CDNS - Cadence Design Systems Inc
+NVDA - NVIDIA Corp
+HCN - Welltower Inc
+WYN - Wyndham Destinations Inc
+PLD - Prologis Inc
+BHF - Brighthouse Financial Inc
+ROST - Ross Stores Inc
+MRK - Merck & Co Inc
+STI - SunTrust Banks Inc
+WEC - WEC Energy Group Inc
+TMO - Thermo Fisher Scientific Inc
+F - Ford Motor Co
+LYB - LyondellBasell Industries NV
+IBM - International Business Machines Corp
+IQV - IQVIA Holdings Inc
+VRTX - Vertex Pharmaceuticals Inc
+CERN - Cerner Corp
+PEP - PepsiCo Inc
+HP - Helmerich and Payne Inc
+AOS - A. O. Smith Corp
+BLK - BlackRock Inc
+HII - Huntington Ingalls Industries Inc
+CVS - CVS Health Corp
+PH - Parker-Hannifin Corp
+NSC - Norfolk Southern Corp
+MSFT - Microsoft Corp
+ARNC - Arconic Inc
+BAX - Baxter International Inc
+HUM - Humana Inc
+ZBH - Zimmer Biomet Holdings Inc
+GILD - Gilead Sciences Inc
+JWN - Nordstrom Inc
+CMA - Comerica Inc
+NOC - Northrop Grumman Corp
+PNW - Pinnacle West Capital Corp
+BFb - Brown-Forman Corp
+DE - Deere & Co
+HSY - Hershey Co
+TMK - Torchmark Corp
+SLB - Schlumberger NV
+AWK - American Water Works Company Inc
+PKG - Packaging Corp of America
+ADI - Analog Devices Inc
+MMC - Marsh & McLennan Companies Inc
+IT - Gartner Inc
+ECL - Ecolab Inc
+BXP - Boston Properties Inc
+GE - General Electric Co
+ED - Consolidated Edison Inc
+BHGE - Baker Hughes A GE Co
+ALLE - Allegion PLC
+WFC - Wells Fargo & Co
+FTV - Fortive Corp
+AEE - Ameren Corp
+PRU - Prudential Financial Inc
+DLTR - Dollar Tree Inc
+CF - CF Industries Holdings Inc
+NEE - Nextera Energy Inc
+AEP - American Electric Power Company Inc
+FMC - FMC Corp
+ILMN - Illumina Inc
+KLAC - KLA-Tencor Corp
+AME - Ametek Inc
+XLNX - Xilinx Inc
+NUE - Nucor Corp
+WU - Western Union Co
+D - Dominion Energy Inc
+SJM - J M Smucker Co
+EMR - Emerson Electric Co
+DVA - DaVita Inc
+CMS - CMS Energy Corp
+HPE - Hewlett Packard Enterprise Co
+APC - Anadarko Petroleum Corp
+RHI - Robert Half International Inc
+BDX - Becton Dickinson and Co
+AAP - Advance Auto Parts Inc
+MGM - MGM Resorts International
+ALGN - Align Technology Inc
+SRE - Sempra Energy
+REGN - Regeneron Pharmaceuticals Inc
+EFX - Equifax Inc
+USB - U.S. Bancorp
+HCA - HCA Healthcare Inc
+AVGO - Broadcom Inc
+DHR - Danaher Corp
+NWSA - News Corp
+UTX - United Technologies Corp
+AAPL - Apple Inc
+CME - CME Group Inc
+MRO - Marathon Oil Corp
+ADM - Archer Daniels Midland Co
+APD - Air Products and Chemicals Inc
+VAR - Varian Medical Systems Inc
+FLS - Flowserve Corp
+AXP - American Express Co
+CLX - Clorox Co
+DOV - Dover Corp
+MTB - M&T Bank Corp
+FDX - FedEx Corp
+TROW - T. Rowe Price Group Inc
+DRE - Duke Realty Corp
+O - Realty Income Corp
+MLM - Martin Marietta Materials Inc
+PKI - PerkinElmer Inc
+L - Loews Corp
+QCOM - Qualcomm Inc
+IPG - Interpublic Group of Companies Inc
+PHM - PulteGroup Inc
+ANSS - ANSYS Inc
+PBCT - People's United Financial Inc
+ULTA - Ulta Beauty Inc
+KO - Coca-Cola Co
+HRB - H & R Block Inc
+FISV - Fiserv Inc
+CSCO - Cisco Systems Inc
+XRX - Xerox Corp
+WLTW - Willis Towers Watson PLC
+ES - Eversource Energy
+CTAS - Cintas Corp
+GPN - Global Payments Inc
+RSG - Republic Services Inc
+XEC - Cimarex Energy Co
+MCK - McKesson Corp
+HLT - Hilton Worldwide Holdings Inc
+NFLX - Netflix Inc
+DPS - Keurig Dr Pepper Inc
+RF - Regions Financial Corp
+WMT - Walmart Inc
+AMGN - Amgen Inc
+KIM - Kimco Realty Corp
+PXD - Pioneer Natural Resources Co
+DG - Dollar General Corp
+XRAY - Dentsply Sirona Inc
+NBL - Noble Energy Inc
+EQR - Equity Residential
+URI - United Rentals Inc
+TDG - TransDigm Group Inc
+CNC - Centene Corp
+NKE - Nike Inc
+AES - AES Corp
+ANTM - Anthem Inc
+GWW - W W Grainger Inc
+K - Kellogg Co
+GOOGL - Alphabet Inc
+GM - General Motors Co
+CCI - Crown Castle International Corp
+COF - Capital One Financial Corp
+ROP - Roper Technologies Inc
+CXO - Concho Resources Inc
+C - Citigroup Inc
+LEG - Leggett & Platt Inc
+A - Agilent Technologies Inc
+GS - Goldman Sachs Group Inc
+MET - MetLife Inc
+WYNN - Wynn Resorts Ltd
+PSA - Public Storage
+INFO - IHS Markit Ltd
+NLSN - Nielsen Holdings PLC
+HOG - Harley-Davidson Inc
+BK - Bank of New York Mellon Corp
+FAST - Fastenal Co
+ORLY - O'Reilly Automotive Inc
+CSX - CSX Corp
+CFG - Citizens Financial Group Inc
+NI - NiSource Inc
+MO - Altria Group Inc
+DWDP - DowDuPont Inc
+HOLX - Hologic Inc
+HST - Host Hotels & Resorts Inc
+BBY - Best Buy Co Inc
+HRS - Harris Corp
+IFF - International Flavors & Fragrances Inc
+STT - State Street Corp
+JCI - Johnson Controls International PLC
+KSU - Kansas City Southern
+FE - FirstEnergy Corp
+PNC - PNC Financial Services Group Inc
+VZ - Verizon Communications Inc
+NEM - Newmont Mining Corp
+KEY - KeyCorp
+GIS - General Mills Inc
+CMCSA - Comcast Corp
+PFE - Pfizer Inc
+EIX - Edison International
+VIAB - Viacom Inc
+NWS - News Corp
+MU - Micron Technology Inc
+UPS - United Parcel Service Inc
+UNP - Union Pacific Corp
+BAC - Bank of America Corp
+AMG - Affiliated Managers Group Inc
+KMX - Carmax Inc
+IP - International Paper Co
+APA - Apache Corp
+MDT - Medtronic PLC
+MMM - 3M Co
+INTU - Intuit Inc
+OKE - ONEOK Inc
+ADP - Automatic Data Processing Inc
+EQIX - Equinix Inc
+CHD - Church & Dwight Co Inc
+MTD - Mettler-Toledo International Inc
+EBAY - eBay Inc
+PEG - Public Service Enterprise Group Inc
+BIIB - Biogen Inc
+CTSH - Cognizant Technology Solutions Corp
+ALB - Albemarle Corp
+NCLH - Norwegian Cruise Line Holdings Ltd
+UDR - UDR Inc
+DGX - Quest Diagnostics Inc
+ETFC - E*TRADE Financial Corp
+HIG - Hartford Financial Services Group Inc
+VRSK - Verisk Analytics Inc
+AMT - American Tower Corp
+PYPL - PayPal Holdings Inc
+CAG - Conagra Brands Inc
+UHS - Universal Health Services Inc
+SYF - Synchrony Financial
+WAT - Waters Corp
+INCY - Incyte Corp
+M - Macy's Inc
+FL - Foot Locker Inc
+UNM - Unum Group
+LRCX - Lam Research Corp
+IDXX - IDEXX Laboratories Inc
+UAL - United Continental Holdings Inc
+PPG - PPG Industries Inc
+LKQ - LKQ Corp
+HES - Hess Corp
+EOG - EOG Resources Inc
+MAR - Marriott International Inc
+TJX - TJX Companies Inc
+MNST - Monster Beverage Corp
+VMC - Vulcan Materials Co
+EW - Edwards Lifesciences Corp
+LLL - L3 Technologies Inc
+CHK - Chesapeake Energy Corp
+ALL - Allstate Corp
+BMY - Bristol-Myers Squibb Co
+APH - Amphenol Corp
+GPC - Genuine Parts Co
+MHK - Mohawk Industries Inc
+MCHP - Microchip Technology Inc
+CAT - Caterpillar Inc
+PG - Procter & Gamble Co
+ZTS - Zoetis Inc
+AFL - Aflac Inc
+CPB - Campbell Soup Co
+FITB - Fifth Third Bancorp
+MSI - Motorola Solutions Inc
+XEL - Xcel Energy Inc
+HSIC - Henry Schein Inc
+ITW - Illinois Tool Works Inc
+GPS - Gap Inc
+ALK - Alaska Air Group Inc
+DFS - Discover Financial Services
+APTV - Aptiv PLC
+MPC - Marathon Petroleum Corp
+PGR - Progressive Corp
+ZION - Zions Bancorporation NA
+DISCA - Discovery Inc
+ICE - Intercontinental Exchange Inc
+KMB - Kimberly-Clark Corp
+SWKS - Skyworks Solutions Inc
+EL - Estee Lauder Companies Inc
+EXR - Extra Space Storage Inc
+MAT - Mattel Inc
+SPGI - S&P Global Inc
+ADBE - Adobe Inc
+ADSK - Autodesk Inc
+WRK - Westrock Co
+WHR - Whirlpool Corp
+IR - Ingersoll-Rand PLC
+TSN - Tyson Foods Inc
+RRC - Range Resources Corp
+AKAM - Akamai Technologies Inc
+LUV - Southwest Airlines Co
+TSCO - Tractor Supply Co
+AON - Aon PLC
+AMZN - Amazon.com Inc
+FTI - TechnipFMC PLC
+MS - Morgan Stanley
+BRKb - Berkshire Hathaway Inc
+GOOG - Alphabet Inc
+PCLN - Booking Holdings Inc
+STZ - Constellation Brands Inc
+ABBV - AbbVie Inc
+MA - Mastercard Inc
+XOM - Exxon Mobil Corp
+SWK - Stanley Black & Decker Inc
+HRL - Hormel Foods Corp
+INTC - Intel Corp
+WBA - Walgreens Boots Alliance Inc
+DISCK - Discovery Inc
+OMC - Omnicom Group Inc
+GLW - Corning Inc
+CRM - Salesforce.Com Inc
+LNT - Alliant Energy Corp
+SBUX - Starbucks Corp
+TSS - Total System Services Inc
+ETR - Entergy Corp
+UA - Under Armour Inc
+HAL - Halliburton Co
+BBT - BB&T Corp
+ATVI - Activision Blizzard Inc
+TAP - Molson Coors Brewing Co
+ABT - Abbott Laboratories
+V - Visa Inc
+YUM - Yum! Brands Inc
+JNPR - Juniper Networks Inc
+RE - Everest Re Group Ltd
+DTE - DTE Energy Co
+IRM - Iron Mountain Inc
+HCP - HCP Inc
+FIS - Fidelity National Information Services Inc
+DAL - Delta Air Lines Inc
+ROK - Rockwell Automation Inc
+HBI - HanesBrands Inc
+PPL - PPL Corp
+EXC - Exelon Corp
+NTRS - Northern Trust Corp
+ETN - Eaton Corporation PLC
+CVX - Chevron Corp
+LNC - Lincoln National Corp
+CI - Cigna Corp
+ACN - Accenture PLC
+XYL - Xylem Inc
+HAS - Hasbro Inc
+VNO - Vornado Realty Trust
+CTXS - Citrix Systems Inc
+DISH - DISH Network Corp
+EQT - EQT Corp
+AYI - Acuity Brands Inc
+AMD - Advanced Micro Devices Inc
+CTL - CenturyLink Inc
+NRG - NRG Energy Inc
+LMT - Lockheed Martin Corp
+DLR - Digital Realty Trust Inc
+PSX - Phillips 66
+FLIR - FLIR Systems Inc
+SCHW - Charles Schwab Corp
+DXC - DXC Technology Co
+SNPS - Synopsys Inc
+JEC - Jacobs Engineering Group Inc
+AVY - Avery Dennison Corp
+RHT - Red Hat Inc
+TRIP - TripAdvisor Inc
+SO - Southern Co
