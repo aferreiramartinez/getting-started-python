@@ -178,7 +178,14 @@ def get_fiscal_year_dates(iEikonTicker):
     print("FY dates")
     oFY={}
     df = ek.get_data(iEikonTicker,'TR.EBITDA(Period=FY0).periodenddate',raw_output=True)
-    month=df['data'][0][1].split("-")[1].lstrip("0")
+    # 'data': [['SJM.N', '2019-04-30']]
+    fulldate=df['data'][0][1].split("-")
+    if fulldate == ['']:
+        df = ek.get_data(iEikonTicker,'TR.Revenue(Period=FY0).periodenddate',raw_output=True)
+        fulldate=df['data'][0][1].split("-")
+    if fulldate == ['']:
+        print('ERROR NO FISCAL YEAR END DATE USING EBITDA OR REVENUE')
+    month = fulldate[1].lstrip("0")
     aMonthName=calendar.month_abbr[int(month)].upper()
     aMonthDay=df['data'][0][1].split("-")[2]
     oFY["FYEndDate"]=(aMonthDay+'-'+aMonthName)
@@ -387,6 +394,11 @@ def retrieve_fiscal_year_data(iEikonTicker):
     #Obtain last reported Fiscal Year date
     df = ek.get_data(iEikonTicker,'TR.EBITDA(Period=FY0).periodenddate',raw_output=True) #'data': [['AAPL.O', '2018-09-29']]
     aLastFYEnd=df['data'][0][1].split("-") #['2018', '09', '29']
+    if aLastFYEnd == ['']:
+        df = ek.get_data(iEikonTicker,'TR.Revenue(Period=FY0).periodenddate',raw_output=True)
+        aLastFYEnd=df['data'][0][1].split("-")
+    if aLastFYEnd == ['']:
+        print('ERROR NO SMART DATE PERIOD END DATE')
     aLastFYEnd=datetime(int(aLastFYEnd[0]),int(aLastFYEnd[1].lstrip("0")),int(aLastFYEnd[2].lstrip("0")))#datetime.datetime(2018, 9, 29, 0, 0)
     aFY0=aLastFYEnd.year-len(aFiscalYears)+1 #2018-5+1=2014
 
@@ -510,11 +522,15 @@ def retrieve_estimated_fiscal_year_data(iEikonTicker):
     aFYDataDict["Estimated"]="true"
     oListJson={}
     df = ek.get_data(iEikonTicker,'TR.EPSMean(Period=FY1).periodenddate',raw_output=True)
-
     aLastFYEnd=df['data'][0][1].split("-")
     if aLastFYEnd == ['']:
         df = ek.get_data(iEikonTicker,'TR.EpsSmartEst(Period=FY1).periodenddate',raw_output=True)
         aLastFYEnd=df['data'][0][1].split("-")
+    if aLastFYEnd == ['']:
+        df = ek.get_data(iEikonTicker,'TR.EBITDAMean(Period=FY1).periodenddate',raw_output=True)
+        aLastFYEnd=df['data'][0][1].split("-")
+    if aLastFYEnd == ['']:
+        print('ERROR NO SMART DATE PERIOD END DATE')
     aLastFYEnd=datetime(int(aLastFYEnd[0]),int(aLastFYEnd[1].lstrip("0")),int(aLastFYEnd[2].lstrip("0")))
     aFY1=aLastFYEnd.year
     #NOTE:Estimated fiscal year price close
