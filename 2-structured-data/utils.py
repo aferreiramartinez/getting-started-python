@@ -11,10 +11,10 @@ if __name__ == '__main__':
         #model_mongodb.update(document, str(docId))
 
     cursor = model_mongodb.read_all()
-    with open('SP500-ticker-and-names.txt', 'a') as the_file:
+    with open('NASDAQ-ticker-and-names.txt', 'a') as the_file:
         for document in cursor:
             ticker=document["Ticker"]
             companyName=document["CompanyName"]
-            the_file.write(ticker+' - '+companyName+'\n')
+            the_file.write("'"+ticker+' - '+companyName+"',"+'\n')
         the_file.close()
 
