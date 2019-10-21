@@ -125,8 +125,9 @@ def get_daily_updates(iEikonTicker):
              'EV',
              'SharePrice',
              'DailyVolume',
-             'PE']
-    df = ek.get_data(iEikonTicker, ['TR.CompanyMarketCap','TR.EV','CF_LAST','TR.Volume','TR.PE'], raw_output=True)
+             'PE',
+             'SharesOutstanding']
+    df = ek.get_data(iEikonTicker, ['TR.CompanyMarketCap','TR.EV','CF_LAST','TR.Volume','TR.PE','TR.SharesOutstanding'], raw_output=True)
     for data in aLabels:
         oDailyJson["DailyUpdated"][data] = FloatOrZero(df['data'][0][aStartIndex])
         aStartIndex+=1
@@ -249,6 +250,10 @@ def get_all_year_data(iEikonTicker):
 
 def retrieve_eikon_reports(iEikonTicker, iPeriod , iNumPeriods):
     aLabels=collections.OrderedDict({'CashAndEquiv':'BalanceSheet',
+                                     'TotalCurrentAssets':'BalanceSheet',
+                                     'TotalCurrentLiabilities':'BalanceSheet',
+                                     'CurrentDeferredRevenue':'BalanceSheet',
+                                     'LTDeferredRevenue':'BalanceSheet',
                                      'NetTradeAccReceivable':'BalanceSheet',
                                      'Inventories':'BalanceSheet',
                                      'IntangiblesNet':'BalanceSheet',
@@ -274,6 +279,7 @@ def retrieve_eikon_reports(iEikonTicker, iPeriod , iNumPeriods):
                                      'EV/EBIT':'Other',
                                      'EV':'Other',
                                      'P/E':'Other',
+                                     'BookValuePerShare':'Other',
                                      'GrossMarginPct':'Other',
                                      'EBITMarginPct':'Other',
                                      'EBITDAMarginPct':'Other',
@@ -309,6 +315,10 @@ def retrieve_eikon_reports(iEikonTicker, iPeriod , iNumPeriods):
     oLabels=list(aLabels.items())
     df = ek.get_data(iEikonTicker,
                      ['TR.CashandEquivalents',
+                      'TR.CurrentAssetsActValue',
+                      'TR.CurrentLiabilitiesActValue',
+                      'TR.DeferredRevenueActValue'
+                      'TR.LTDefRevActValue'
                       'TR.AcctsReceivTradeNet',
                       'TR.TotalInventory',
                       'TR.IntangiblesNet',
@@ -334,6 +344,7 @@ def retrieve_eikon_reports(iEikonTicker, iPeriod , iNumPeriods):
                       'TR.EVEBIT',
                       'TR.HistEnterpriseValue',
                       'TR.HistPE',
+                      'TR.BookValuePerShare'
                       'TR.GrossMargin',
                       'TR.EBITMarginPercent',
                       'TR.EBITDAMarginPercent',
@@ -348,8 +359,8 @@ def retrieve_eikon_reports(iEikonTicker, iPeriod , iNumPeriods):
                       'TR.NetIncomeBeforeExtraItems',
                       'TR.ProvisionForIncomeTaxes',
                       'TR.DiscontinuedOperations',
-                      'TR.FreeCashFlow',
-                      'TR.CapitalExpenditures',
+                      'TR.FCFActValue',
+                      'TR.CapexActValue',
                       'TR.CashInterestPaid',
                       'TR.CashTaxesPaid',
                       'TR.ChangesInWorkingCapital',
@@ -360,12 +371,12 @@ def retrieve_eikon_reports(iEikonTicker, iPeriod , iNumPeriods):
                       'TR.STDebtReduction',
                       'TR.SaleMaturityofInvestment',
                       'TR.RepurchaseRetirementOfCommon',
-                      'TR.TotalCashDividendsPaid',
+                      'TR.TotalDividendsActValue',
                       'TR.NetCashEndingBalance',
                       'TR.NetCashBeginningBalance',
-                      'TR.CashFromOperatingActivities',
-                      'TR.CashFromInvestingActivities',
-                      'TR.CashFromFinancingActivities',
+                      'TR.CashFlowfromOperationsActValue',
+                      'TR.CashFlowfromInvestingActValue',
+                      'TR.CashFlowfromFinancingActValue',
                       'TR.EBITDA.fperiod',
                       'TR.EBITDA.periodenddate',
                       'TR.EBITDAActValue.fperiod',
@@ -435,7 +446,8 @@ def retrieve_eikon_estimates(iEikonTicker, iPeriod, iNumPeriods):
                                      'NetDebtMean': 'BalanceSheet',
                                      'CashAndEquivalents': 'BalanceSheet',
                                      'CurrentAssets': 'BalanceSheet',
-                                     'DeferredRevenue':'BalanceSheet',
+                                     'CurrentDeferredRevenue':'BalanceSheet',
+                                     'LTDeferredRevenue':'BalanceSheet',
                                      'CurrentLiabilities':'BalanceSheet',
                                      'GoodwillMean':'BalanceSheet',
                                      'InventoryMean':'BalanceSheet',
@@ -455,6 +467,7 @@ def retrieve_eikon_estimates(iEikonTicker, iPeriod, iNumPeriods):
                                      'FwdEV/EBITDASmart':'Other',
                                      'FwdEV/EBITSmart':'Other',
                                      'PESmart':'Other',
+                                     'BVPSMean':'Other',
                                      'EVMean': 'Other',
                                      'GrossMarginMean':'Other',
                                      'GrossMarginSmart':'Other'})
@@ -478,6 +491,7 @@ def retrieve_eikon_estimates(iEikonTicker, iPeriod, iNumPeriods):
                       'TR.Cash&EquivalentsMean',
                       'TR.CurrentAssetsMean',
                       'TR.DeferredRevenueMean',
+                      'TR.LTDefRevMean',
                       'TR.CurrentLiabilitiesMean',
                       'TR.GoodwillMean',
                       'TR.InventoryMean',
@@ -485,18 +499,19 @@ def retrieve_eikon_estimates(iEikonTicker, iPeriod, iNumPeriods):
                       'TR.ShareholdersEquityMean',
                       'TR.TotalAssetsMean',
                       'TR.NWCMean',
-                      'TR.CashFlowfromOperationsMean',
+                      'TR.CashFlowfromOperationsMeanEstimate',
                       'TR.FCFMean',
                       'TR.IntExpMean',
                       'TR.CAPEXMean',
-                      'TR.TotalDividendsMean',
-                      'TR.CashFlowfromFinancingMean',
-                      'TR.CashFlowfromInvestingMean',
+                      'TR.TotalDividendsMeanEstimate',
+                      'TR.CashFlowfromFinancingMeanEstimate',
+                      'TR.CashFlowfromInvestingMeanEstimate',
                       'TR.NWCMean',
                       'TR.EVtoEBITDASmartEst',
                       'TR.FwdEVtoEBTSmartEst',
                       'TR.FwdEVtoEBISmartEst',
                       'TR.FwdPtoEPSSmartEst',
+                      'TR.BVPSMean',
                       'TR.EVMean',
                       'TR.GPMMean',
                       'TR.GPMSmartEst',
