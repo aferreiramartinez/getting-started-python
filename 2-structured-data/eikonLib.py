@@ -317,8 +317,8 @@ def retrieve_eikon_reports(iEikonTicker, iPeriod , iNumPeriods):
                      ['TR.CashandEquivalents',
                       'TR.CurrentAssetsActValue',
                       'TR.CurrentLiabilitiesActValue',
-                      'TR.DeferredRevenueActValue'
-                      'TR.LTDefRevActValue'
+                      'TR.DeferredRevenueActValue',
+                      'TR.LTDefRevActValue',
                       'TR.AcctsReceivTradeNet',
                       'TR.TotalInventory',
                       'TR.IntangiblesNet',
@@ -344,7 +344,7 @@ def retrieve_eikon_reports(iEikonTicker, iPeriod , iNumPeriods):
                       'TR.EVEBIT',
                       'TR.HistEnterpriseValue',
                       'TR.HistPE',
-                      'TR.BookValuePerShare'
+                      'TR.BookValuePerShare',
                       'TR.GrossMargin',
                       'TR.EBITMarginPercent',
                       'TR.EBITDAMarginPercent',
@@ -383,6 +383,13 @@ def retrieve_eikon_reports(iEikonTicker, iPeriod , iNumPeriods):
                       'TR.EBITDAActValue.periodenddate'],
                      {'SDate':'-'+iNumPeriods,'EDate':'0','FRQ':iPeriod,'Period':iPeriod+'0'},
                      raw_output=True)
+    # integrity check for forgotten commas
+    # we retrieve 5 items more in df than we have in the oLabels since we have the ticker and 4 dates
+    if len(oLabels) is not (len(df['data'][0])-5):
+        print('Labels length:' +str(len(oLabels)))
+        print('Df length:' +str(len(df['data'][0])-5))
+        raise Exception('ERROR: Missing commas in eikon reports')
+
     return [oLabels,df]
 
 def double_check_FY_data(iTicker,iPeriod,ioJsonData):
@@ -521,6 +528,13 @@ def retrieve_eikon_estimates(iEikonTicker, iPeriod, iNumPeriods):
                       'TR.EpsSmartEst.periodenddate'],
                      {'SDate':'0','EDate':iNumPeriods,'FRQ':iPeriod,'Period':iPeriod+'1'},
                      raw_output=True)
+
+    # integrity check for forgotten commas
+    # we retrieve 5 items more in df than we have in the oLabels since we have the ticker and 4 dates
+    if len(oLabels) is not (len(df['data'][0])-5):
+        print('Labels length:' +str(len(oLabels)))
+        print('Df length:' +str(len(df['data'][0])-5))
+        raise Exception('ERROR: Missing commas in estimated eikon reports')
     return [oLabels,df]
 
 def eikon_to_regular_ticker(iEikonTicker):
