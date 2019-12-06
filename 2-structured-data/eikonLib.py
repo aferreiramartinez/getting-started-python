@@ -126,8 +126,10 @@ def get_daily_updates(iEikonTicker):
              'SharePrice',
              'DailyVolume',
              'PE',
-             'SharesOutstanding']
-    df = ek.get_data(iEikonTicker, ['TR.CompanyMarketCap','TR.EV','CF_LAST','TR.Volume','TR.PE','TR.SharesOutstanding'], raw_output=True)
+             'SharesOutstanding',
+             'SIShortInterest',
+             'TotalReturnYTD']
+    df = ek.get_data(iEikonTicker, ['TR.CompanyMarketCap','TR.EV','CF_LAST','TR.Volume','TR.PE','TR.SharesOutstanding','TR.SIShortInterest','TR.TotalReturnYTD'], raw_output=True)
     for data in aLabels:
         oDailyJson["DailyUpdated"][data] = FloatOrZero(df['data'][0][aStartIndex])
         aStartIndex+=1

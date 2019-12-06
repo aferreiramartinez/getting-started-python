@@ -6,7 +6,7 @@ from pprint import pprint
 from datetime import datetime
 from flask import current_app, Flask, redirect, url_for
 
-ek.set_app_id('9FB32FA719C8F1EE8CDEF1A')
+ek.set_app_id('80a60244246c4c139ea016a0c9dde616194983de')
 pd.options.display.max_colwidth = 10000
 
 def FloatOrZero(value):

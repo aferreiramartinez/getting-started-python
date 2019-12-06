@@ -6,6 +6,7 @@ MONGO_URI = \
 
 DB_NAME = 'convector-labs-db'
 DB_HOST = 'ds119436.mlab.com'
+# DB_HOST = 'ds119436.mlab.com?retryWrites=false'
 DB_PORT = 19436
 DB_USER = 'aferreiramartinez'
 DB_PASS = 'Waxqptp55'

@@ -1,5 +1,7 @@
-from lxml import html
+import sys
+sys.path.append("..")
 from database import model_mongodb
+from lxml import html
 from datetime import datetime
 import eikonLib as ekLib
 import requests, sys
@@ -254,12 +256,12 @@ if __name__ == '__main__':
     aEikonTickers=retrieve_eikon_file(file)
 
     #delete_ticker_data(model,["BetaWklyUp3Y","DailyUpdated"],aEikonTickers)
-    get_all_eikon_data(model,aEikonTickers,file)
+    #get_all_eikon_data(model,aEikonTickers,file)
     #ekLib.get_120_month_share_price(aEikonTickers)
     #ekLib.get_365_day_share_price('AAPL.O')
     #ekLib.retrieve_eikon_reports('AAPL.O','FY','5')
     #ekLib.get_bonds('AAPL.O')
-    #update_ticker_function(model, ekLib.get_fiscal_year_dates, aEikonTickers)
+    update_ticker_function(model, ekLib.get_daily_updates, aEikonTickers)
     #earnings_power(model,aEikonTickers)
     #print(wrongTickers)
     #print(get_competitors('AAPL.O'))
