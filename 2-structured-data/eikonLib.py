@@ -316,7 +316,7 @@ def retrieve_eikon_reports(iEikonTicker, iPeriod , iNumPeriods):
                                      'CashFromFinancingActivities':'CashFlow'})
     oLabels=list(aLabels.items())
     df = ek.get_data(iEikonTicker,
-                     ['TR.CashandEquivalents',
+                     ['TR.Cash&EquivalentsActValue',
                       'TR.CurrentAssetsActValue',
                       'TR.CurrentLiabilitiesActValue',
                       'TR.DeferredRevenueActValue',
@@ -528,7 +528,7 @@ def retrieve_eikon_estimates(iEikonTicker, iPeriod, iNumPeriods):
                       'TR.EPSMean.periodenddate',
                       'TR.EpsSmartEst.fperiod',
                       'TR.EpsSmartEst.periodenddate'],
-                     {'SDate':'0','EDate':iNumPeriods,'FRQ':iPeriod,'Period':iPeriod+'1'},
+                     {'SDate':'1','EDate':iNumPeriods,'FRQ':iPeriod,'Period':iPeriod+'0'},
                      raw_output=True)
 
     # integrity check for forgotten commas
@@ -565,7 +565,7 @@ def retrieve_estimated_fiscal_year_data(iEikonTicker):
     aLastFYEnd=datetime(int(aLastFYEnd[0]),int(aLastFYEnd[1].lstrip("0")),int(aLastFYEnd[2].lstrip("0")))
     aFY1=aLastFYEnd.year
     #NOTE:Estimated fiscal year price close
-    aLabels,df = retrieve_eikon_estimates(iEikonTicker,'FY',str(len(aFiscalYears)-1))
+    aLabels,df = retrieve_eikon_estimates(iEikonTicker,'FY',str(len(aFiscalYears)))
     for indx,fy in enumerate(aFiscalYears,start=0):
         #Get array of all data, first parameter is ticker, it isnt needed
         aDfLen=len(df['data'][0])-5
@@ -586,7 +586,7 @@ def retrieve_fiscal_quarter_data(iEikonTicker):
 
     #Retrieve data and estimates, we do -1 since {'SDate':'0','EDate':'5'...} will retrieve 6 elems not 5.
     aLabels,df = retrieve_eikon_reports(iEikonTicker, 'FQ',str(aNumOfQuarters-1))
-    aEstLabels,estDf = retrieve_eikon_estimates(iEikonTicker, 'FQ',str(aNumOfEstQuarters-1))
+    aEstLabels,estDf = retrieve_eikon_estimates(iEikonTicker, 'FQ',str(aNumOfEstQuarters))
 
     for qtrIdx in range(aNumOfQuarters):
         aFQDataDict.clear()
