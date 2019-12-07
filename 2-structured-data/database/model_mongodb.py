@@ -39,34 +39,34 @@ def from_mongo(data):
 # # [END list]
 #
 def delete(id):
-    db.eikonTwo.remove(_id(id))
+    db.visibleAlpha.remove(_id(id))
 
 
 # [START read]
 def read(id):
-    result = db.eikonTwo.find_one(_id(id))
+    result = db.visibleAlpha.find_one(_id(id))
     return from_mongo(result)
 # [END read]
 
 def read_by_ticker(iEikonTicker):
-    result = db.eikonTwo.find_one({ "EikonTicker": iEikonTicker })
+    result = db.visibleAlpha.find_one({ "EikonTicker": iEikonTicker })
     return from_mongo(result)
 
 def read_all():
-    cursor = db.eikonTwo.find({})
+    cursor = db.visibleAlpha.find({})
     return from_mongo(cursor)
 
 # [START create]
 def create(data):
     print('create mongo')
-    new_id = db.eikonTwo.insert(data)
+    new_id = db.visibleAlpha.insert(data)
     return read(new_id)
 # [END create]
 
 
 # [START update]
 def update(data, id):
-    db.eikonTwo.update({'_id': _id(id)}, data)
+    db.visibleAlpha.update({'_id': _id(id)}, data)
     return read(id)
 # [END update]
 

@@ -4,6 +4,7 @@ from database import model_mongodb
 from lxml import html
 from datetime import datetime
 import eikonLib as ekLib
+import visibleAlphaLib as vaLib
 import requests, sys
 import eikon as ek
 import pandas as pd
@@ -213,6 +214,26 @@ def earnings_power(iModel, aEikonTickers):
             continue
     file.close()
 
+def storeVisibleAlpha(aMongoDBModel,iEikonTickers):
+    aEikonExeptList=[]
+    aVisibleAlphaAllData={}
+    token = vaLib.getAuthToken()
+    for aEikonTicker in iEikonTickers:
+        try:
+            print(aEikonTicker)
+            vaData = vaLib.getBulkForTicker(aEikonTicker, token)
+            print(vaData)
+            aVisibleAlphaAllData.update(vaData)
+            # model_mongodb.add_to_mongo(aMongoDBModel,aVisibleAlphaAllData)
+            aVisibleAlphaAllData.clear()
+            print(aEikonExeptList)
+        except KeyboardInterrupt:
+            sys.exit(0)
+        except Exception as e:
+            aEikonExeptList.append(aEikonTicker)
+            print(aEikonExeptList)
+            print(e)
+            continue
 
 def recursive_update(d,u):
     for k, v in u.items():
@@ -254,14 +275,14 @@ if __name__ == '__main__':
     #Eikon all tickers
     file = 'SP500.txt'
     aEikonTickers=retrieve_eikon_file(file)
-
+    storeVisibleAlpha(model,aEikonTickers)
     #delete_ticker_data(model,["BetaWklyUp3Y","DailyUpdated"],aEikonTickers)
     #get_all_eikon_data(model,aEikonTickers,file)
     #ekLib.get_120_month_share_price(aEikonTickers)
     #ekLib.get_365_day_share_price('AAPL.O')
     #ekLib.retrieve_eikon_reports('AAPL.O','FY','5')
     #ekLib.get_bonds('AAPL.O')
-    update_ticker_function(model, ekLib.get_daily_updates, aEikonTickers)
+    #update_ticker_function(model, ekLib.get_daily_updates, aEikonTickers)
     #earnings_power(model,aEikonTickers)
     #print(wrongTickers)
     #print(get_competitors('AAPL.O'))
