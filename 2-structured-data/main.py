@@ -222,9 +222,8 @@ def storeVisibleAlpha(aMongoDBModel,iEikonTickers):
         try:
             print(aEikonTicker)
             vaData = vaLib.getBulkForTicker(aEikonTicker, token)
-            print(vaData)
             aVisibleAlphaAllData.update(vaData)
-            # model_mongodb.add_to_mongo(aMongoDBModel,aVisibleAlphaAllData)
+            model_mongodb.add_to_mongo(aMongoDBModel,aVisibleAlphaAllData)
             aVisibleAlphaAllData.clear()
             print(aEikonExeptList)
         except KeyboardInterrupt:

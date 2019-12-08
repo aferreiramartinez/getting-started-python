@@ -1,6 +1,4 @@
 import requests
-import pandas as pd
-from pandas.io.json import json_normalize
 import collections, copy
 
 def getAuthToken():
@@ -36,6 +34,9 @@ def getFinancialsIDs(iTicker, iAuthToken):
     cut = 'cut=SD&'
     ticker = 'ticker='+str(iTicker).split('.')[0]+'&'
     response = requests.get(url+name+cut+ticker,headers=iAuthToken)
+    if response.json()['status']=='error':
+        ticker = 'ticker='+str(iTicker).split('.')[0]+'_US'+'&'
+        response = requests.get(url+name+cut+ticker,headers=iAuthToken)
     params = response.json()['parameter']
     # params = mockGetMeta['parameter']
     financials={'BalanceSheet':{},'IncomeStatement':{},'CashFlow':{},'Other':{}}
@@ -64,21 +65,24 @@ def getFinancialsIDs(iTicker, iAuthToken):
 def getBulkForTicker(iTicker, iAuthToken):
     financials = getFinancialsIDs(iTicker,iAuthToken)
     url = 'https://app.visiblealpha.com/api2/'
-    name = 'getpg?'
+    name = 'getpg?&'
     cut = 'cut=SD&'
     regularTicker = str(iTicker).split('.')[0]
     ticker = 'ticker='+regularTicker+'&'
-    period ='period=FY-2015&period=FY-2016&period=FY-2017&period=FY-2018&period=FY-2019&period=FY-2020&period=FY-2021&period=FY-2022&period=FY-2023&period=FY-2024'
+    period ='period=FY-2016&period=FY-2017&period=FY-2018&period=FY-2019&period=FY-2020&period=FY-2021&period=FY-2022&period=FY-2023&period=FY-2024&'
     source = 'source=consensus&'
     revision = 'revision=current'
     allDataDoc= collections.defaultdict(dict)
     allDataDoc['EikonTicker']=str(iTicker)
     allDataDoc['Ticker']=str(regularTicker)
-    for page in enumerate(['pg=BS&','pg=IS&','pg=CF&','pg=RT&']):
+    for page in ['pg=BS&','pg=IS&','pg=CF&','pg=RT&']:
         dataType = page.replace("pg=","").replace("&","")
         longDataTypeName = getLongDataTypeName(dataType)
         financeKeys = financials[longDataTypeName].keys()
         response = requests.get(url+name+page+cut+ticker+period+source+revision, headers=iAuthToken)
+        if response.json()['status']=='error':
+            ticker = 'ticker='+str(iTicker).split('.')[0]+'_US'+'&'
+            response = requests.get(url+name+page+cut+ticker+period+source+revision, headers=iAuthToken)
         bulkDataYears = response.json()['data']
         # bulkDataYears = mockBulk['data']
         for singleDataYear in bulkDataYears:
