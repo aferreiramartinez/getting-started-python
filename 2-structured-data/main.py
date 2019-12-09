@@ -272,7 +272,7 @@ if __name__ == '__main__':
     model = model_mongodb
 
     #Eikon all tickers
-    file = 'SP500.txt'
+    file = 'FTSE350.txt'
     aEikonTickers=retrieve_eikon_file(file)
     storeVisibleAlpha(model,aEikonTickers)
     #delete_ticker_data(model,["BetaWklyUp3Y","DailyUpdated"],aEikonTickers)

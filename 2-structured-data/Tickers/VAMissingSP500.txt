@@ -1,0 +1,1 @@
+'AMCR.N', 'LIN.N', 'VRSN.OQ', 'UAA.N', 'BKR.N', 'ALLE.N', 'L.N', 'NWS.OQ', 'FOXA.OQ', 'BRKb.N', 'GOOG.OQ', 'DISCK.OQ'

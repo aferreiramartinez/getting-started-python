@@ -1,0 +1,1 @@
+'WPP.L', 'SJP.L', 'EVRE.L', 'MNG.L', 'BKGH.L', 'SKG.L', 'MRON.L', 'BHPB.L', 'AUTOA.L', 'TUIT.L', 'SLA.L', 'BP.L', 'ADML.L', 'FLTRF.L', 'BT.L', 'BATS.L', 'RDSb.L', 'SMT.L', 'HRGV.L', 'POLYP.L', 'RDSa.L', 'BAES.L'

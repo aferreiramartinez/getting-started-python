@@ -35,13 +35,13 @@ def getFinancialsIDs(iTicker, iAuthToken):
     ticker = 'ticker='+str(iTicker).split('.')[0]+'&'
     response = requests.get(url+name+cut+ticker,headers=iAuthToken)
     if response.json()['status']=='error':
-        ticker = 'ticker='+str(iTicker).split('.')[0]+'_US'+'&'
+        ticker = 'ticker='+str(iTicker).split('.')[0]+'_UK'+'&'
         response = requests.get(url+name+cut+ticker,headers=iAuthToken)
     params = response.json()['parameter']
     # params = mockGetMeta['parameter']
     financials={'BalanceSheet':{},'IncomeStatement':{},'CashFlow':{},'Other':{}}
     for param in params:
-        lineItemName=param['name'].title().replace(",","").replace("'","").replace(" ","").replace("-","").replace("&","And")
+        lineItemName=param['name'].title().replace(",","").replace("'","").replace(" ","").replace("-","").replace("&","And").replace(".","")
         lineItemDoc={}
         lineItemDoc['id']=param['id']
         if param['shortName'] == 'BS':
@@ -81,7 +81,7 @@ def getBulkForTicker(iTicker, iAuthToken):
         financeKeys = financials[longDataTypeName].keys()
         response = requests.get(url+name+page+cut+ticker+period+source+revision, headers=iAuthToken)
         if response.json()['status']=='error':
-            ticker = 'ticker='+str(iTicker).split('.')[0]+'_US'+'&'
+            ticker = 'ticker='+str(iTicker).split('.')[0]+'_UK'+'&'
             response = requests.get(url+name+page+cut+ticker+period+source+revision, headers=iAuthToken)
         bulkDataYears = response.json()['data']
         # bulkDataYears = mockBulk['data']
