@@ -216,14 +216,20 @@ def earnings_power(iModel, aEikonTickers):
 
 def storeVisibleAlpha(aMongoDBModel,iEikonTickers):
     aEikonExeptList=[]
-    aVisibleAlphaAllData={}
+    aVisibleAlphaAllData=collections.defaultdict(dict)
     token = vaLib.getAuthToken()
     for aEikonTicker in iEikonTickers:
         try:
             print(aEikonTicker)
-            vaData = vaLib.getBulkForTicker(aEikonTicker, token)
-            aVisibleAlphaAllData.update(vaData)
-            model_mongodb.add_to_mongo(aMongoDBModel,aVisibleAlphaAllData)
+            regularTicker = str(aEikonTicker).split('.')[0]
+            ticker = 'ticker='+regularTicker+'&'
+            vaDataQuarter = vaLib.getBulkForTicker(aEikonTicker, token, False)
+            aVisibleAlphaAllData['EikonTicker']=str(aEikonTicker)
+            aVisibleAlphaAllData['Ticker']=str(regularTicker)
+            aVisibleAlphaAllData.update(vaDataQuarter)
+            vaDataYear = vaLib.getBulkForTicker(aEikonTicker, token, True)
+            aVisibleAlphaAllData.update(vaDataYear)
+            model_mongodb.add_to_mongo(aMongoDBModel,dict(aVisibleAlphaAllData))
             aVisibleAlphaAllData.clear()
             print(aEikonExeptList)
         except KeyboardInterrupt:

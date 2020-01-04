@@ -26,6 +26,8 @@ def getLongDataTypeName(iDataType):
         return 'CashFlow'
     elif iDataType == 'RT':
         return 'Other'
+    elif iDataType == 'ABS':
+        return 'AverageBalanceSheet'
 
 # GET METADATA TO FIND ID'S
 def getFinancialsIDs(iTicker, iAuthToken):
@@ -35,11 +37,11 @@ def getFinancialsIDs(iTicker, iAuthToken):
     ticker = 'ticker='+str(iTicker).split('.')[0]+'&'
     response = requests.get(url+name+cut+ticker,headers=iAuthToken)
     if response.json()['status']=='error':
-        ticker = 'ticker='+str(iTicker).split('.')[0]+'_UK'+'&'
+        ticker = 'ticker='+str(iTicker).split('.')[0]+'_US'+'&'
         response = requests.get(url+name+cut+ticker,headers=iAuthToken)
     params = response.json()['parameter']
     # params = mockGetMeta['parameter']
-    financials={'BalanceSheet':{},'IncomeStatement':{},'CashFlow':{},'Other':{}}
+    financials={'BalanceSheet':{},'IncomeStatement':{},'CashFlow':{},'Other':{},'AverageBalanceSheet':{}}
     for param in params:
         lineItemName=param['name'].title().replace(",","").replace("'","").replace(" ","").replace("-","").replace("&","And").replace(".","")
         lineItemDoc={}
@@ -52,6 +54,8 @@ def getFinancialsIDs(iTicker, iAuthToken):
             financials['CashFlow'][lineItemName]=lineItemDoc
         elif param['shortName'] == 'RT':
             financials['Other'][lineItemName]=lineItemDoc
+        elif param['shortName'] == 'ABS':
+            financials['AverageBalanceSheet'][lineItemName]=lineItemDoc
     return financials
 
 # 'BalanceSheet': {
@@ -62,31 +66,47 @@ def getFinancialsIDs(iTicker, iAuthToken):
 
 
 # GET BULK DATA WITH getpg
-def getBulkForTicker(iTicker, iAuthToken):
+def getBulkForTicker(iTicker, iAuthToken, isYearlyData = True):
+    if isYearlyData == True:
+        storedQuarterOrYear='DataByFiscalYear'
+    else:
+        storedQuarterOrYear='DataByFiscalQuarter'
     financials = getFinancialsIDs(iTicker,iAuthToken)
     url = 'https://app.visiblealpha.com/api2/'
     name = 'getpg?&'
     cut = 'cut=SD&'
     regularTicker = str(iTicker).split('.')[0]
     ticker = 'ticker='+regularTicker+'&'
-    period ='period=FY-2016&period=FY-2017&period=FY-2018&period=FY-2019&period=FY-2020&period=FY-2021&period=FY-2022&period=FY-2023&period=FY-2024&'
+    if isYearlyData == True:
+        period ='period=FY-2016&period=FY-2017&period=FY-2018&period=FY-2019&period=FY-2020&period=FY-2021&period=FY-2022&period=FY-2023&period=FY-2024&'
+    else:
+        period ='period=1QFY-2019&period=2QFY-2019&period=3QFY-2019&period=4QFY-2019&period=1QFY-2020&period=2QFY-2020&period=3QFY-2020&period=4QFY-2020&period=1QFY-2021&period=2QFY-2021&period=3QFY-2021&period=4QFY-2021&'
     source = 'source=consensus&'
     revision = 'revision=current'
     allDataDoc= collections.defaultdict(dict)
-    allDataDoc['EikonTicker']=str(iTicker)
-    allDataDoc['Ticker']=str(regularTicker)
-    for page in ['pg=BS&','pg=IS&','pg=CF&','pg=RT&']:
+    outputData= collections.defaultdict(dict)
+#    allDataDoc['EikonTicker']=str(iTicker)
+#    allDataDoc['Ticker']=str(regularTicker)
+    outputData[storedQuarterOrYear]={}
+    for page in ['pg=BS&','pg=IS&','pg=RT&','pg=CF&','pg=ABS&']:
         dataType = page.replace("pg=","").replace("&","")
         longDataTypeName = getLongDataTypeName(dataType)
+        if financials[longDataTypeName] is None:
+            print('ERROR')
+            continue
         financeKeys = financials[longDataTypeName].keys()
         response = requests.get(url+name+page+cut+ticker+period+source+revision, headers=iAuthToken)
         if response.json()['status']=='error':
-            ticker = 'ticker='+str(iTicker).split('.')[0]+'_UK'+'&'
+            ticker = 'ticker='+str(iTicker).split('.')[0]+'_US'+'&'
             response = requests.get(url+name+page+cut+ticker+period+source+revision, headers=iAuthToken)
         bulkDataYears = response.json()['data']
         # bulkDataYears = mockBulk['data']
         for singleDataYear in bulkDataYears:
-            aFY=singleDataYear['fiscalyear'].replace("-","")
+            if isYearlyData == True:
+                aFY=singleDataYear['fiscalyear'].replace("-","")
+            else:
+                aFY=singleDataYear['fiscalyear'].replace("-","")
+                aFY=aFY[2:8]+aFY[1]+aFY[0]
             allDataDoc[aFY]["Estimated"]=singleDataYear['forecast']
             # for every line item id check whether its present and add the value to the financials document
             for financeKey in financeKeys:
@@ -99,7 +119,8 @@ def getBulkForTicker(iTicker, iAuthToken):
                             allDataDoc[aFY][longDataTypeName][financeKey]={}
                         allDataDoc[aFY][longDataTypeName][financeKey]['value'] = copy.deepcopy(lineItem['value'])
                         allDataDoc[aFY][longDataTypeName][financeKey]['id'] = copy.deepcopy(lineItem['param_id'])
-    return dict(allDataDoc)
+    outputData[storedQuarterOrYear].update(copy.deepcopy(allDataDoc))
+    return dict(outputData)
 
 
 
