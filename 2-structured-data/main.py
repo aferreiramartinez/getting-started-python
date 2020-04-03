@@ -280,9 +280,10 @@ if __name__ == '__main__':
     #Eikon all tickers
     file = 'FTSE350.txt'
     aEikonTickers=retrieve_eikon_file(file)
-    storeVisibleAlpha(model,aEikonTickers)
+    #storeVisibleAlpha(model,aEikonTickers)
+    get_all_eikon_data(model,aEikonTickers,file)
+
     #delete_ticker_data(model,["BetaWklyUp3Y","DailyUpdated"],aEikonTickers)
-    #get_all_eikon_data(model,aEikonTickers,file)
     #ekLib.get_120_month_share_price(aEikonTickers)
     #ekLib.get_365_day_share_price('AAPL.O')
     #ekLib.retrieve_eikon_reports('AAPL.O','FY','5')

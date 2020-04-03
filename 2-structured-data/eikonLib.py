@@ -593,7 +593,10 @@ def retrieve_fiscal_quarter_data(iEikonTicker):
         aFQDataDict["Estimated"]="false"
 
         #Get quarter dates and verify validity, if there is no fiscal quarter, do not add empty key
-        aDates = df['data'][qtrIdx][-4:]
+        try:
+            aDates = df['data'][qtrIdx][-4:]
+        except IndexError:
+            continue
         aQuarter= aDates[0] if aDates[0] is not '' else aDates[2]
         aQuarterEndDate= aDates[1] if aDates[1] is not '' else aDates[3]
         if aQuarter is '' or aQuarterEndDate is '':
@@ -615,7 +618,10 @@ def retrieve_fiscal_quarter_data(iEikonTicker):
         aFQDataDict["Estimated"]="true"
 
         #Get quarter dates and verify validity, if there is no fiscal quarter, do not add empty key
-        aDates = estDf['data'][estIdx][-4:]
+        try:
+            aDates = estDf['data'][estIdx][-4:]
+        except IndexError:
+            continue
         aQuarter= aDates[0] if aDates[0] is not '' else aDates[2]
         aQuarterEndDate= aDates[1] if aDates[1] is not '' else aDates[3]
         if aQuarter is '' or aQuarterEndDate is '':
