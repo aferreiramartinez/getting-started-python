@@ -626,7 +626,7 @@ def retrieve_fiscal_quarter_data(iEikonTicker):
         aQuarterEndDate= aDates[1] if aDates[1] is not '' else aDates[3]
         if aQuarter is '' or aQuarterEndDate is '':
             print(estIdx)
-            print('WARNING QUARTER MISSING')
+            print('WARNING ESTIMATED QUARTER MISSING')
             continue
 
         #First elem of df is always the company name, last 4 are the period end dates we dont need them for data
