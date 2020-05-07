@@ -10,7 +10,7 @@ import eikon as ek
 import pandas as pd
 import collections
 
-ek.set_app_id('80a60244246c4c139ea016a0c9dde616194983de')
+ek.set_app_key('80a60244246c4c139ea016a0c9dde616194983de')
 pd.options.display.max_colwidth = 10000
 
 def retrieve_eikon_file(iFileName):
@@ -278,7 +278,7 @@ if __name__ == '__main__':
     model = model_mongodb
 
     #Eikon all tickers
-    file = 'FTSE350.txt'
+    file = 'IBEX35.txt'
     aEikonTickers=retrieve_eikon_file(file)
     #storeVisibleAlpha(model,aEikonTickers)
     get_all_eikon_data(model,aEikonTickers,file)

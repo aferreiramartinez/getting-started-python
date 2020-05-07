@@ -6,8 +6,8 @@ import pandas as pd
 import eikon as ek
 ek.set_app_id('80a60244246c4c139ea016a0c9dde616194983de')
 
-df = ek.get_data('.FTSE', ['TR.IndexConstituentRIC' , 'TR.IndexConstituentName'], raw_output=True)
-with open('FTSE350.txt', 'a') as the_file:
+df = ek.get_data('.NDX', ['TR.IndexConstituentRIC' , 'TR.IndexConstituentName'], raw_output=True)
+with open('testcomp.txt', 'a') as the_file:
     for idx in df["data"]:
         ticker = idx[1]
         if ticker is not None:
