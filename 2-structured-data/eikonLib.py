@@ -90,15 +90,15 @@ def get_30_day_volume(iEikonTicker):
         oAccumulatedVol += FloatOrZero(vol[1])
     return oAccumulatedVol
 
-def get_365_day_share_price(iEikonTicker):
+def get_365_day_share_price(iEikonTicker, iDateRange = 364):
     print("365 daily price")
     o365DayPrice={"365DaySharePrice":{}}
     aJson={}
-    aPrices=ek.get_data(iEikonTicker, ['TR.PriceClose(SDate=0,EDate=-364,Frq=D)',
-                                       'TR.PriceOpen(SDate=0,EDate=-364,Frq=D)',
-                                       'TR.PriceHigh(SDate=0,EDate=-364,Frq=D)',
-                                       'TR.PriceLow(SDate=0,EDate=-364,Frq=D)',
-                                       'TR.PriceClose(SDate=0,EDate=-364,Frq=D).calcdate'],raw_output=True)
+    aPrices=ek.get_data(iEikonTicker, ['TR.PriceClose(SDate=0,EDate=-'+iDateRange+',Frq=D)',
+                                       'TR.PriceOpen(SDate=0,EDate=-'+iDateRange+',Frq=D)',
+                                       'TR.PriceHigh(SDate=0,EDate=-'+iDateRange+',Frq=D)',
+                                       'TR.PriceLow(SDate=0,EDate=-'+iDateRange+',Frq=D)',
+                                       'TR.PriceClose(SDate=0,EDate=-'+iDateRange+',Frq=D).calcdate'],raw_output=True)
     for aPrice in aPrices['data']:
         aJson["PriceClose"]=FloatOrZero(aPrice[1])
         aJson["PriceOpen"]=FloatOrZero(aPrice[2])

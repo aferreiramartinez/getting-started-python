@@ -153,7 +153,7 @@ def update_ticker_function(iModel, iEikonFunction, aEikonTickers):
     for aTicker in aEikonTickers:
         try:
             print(aTicker)
-            data = iModel.read_by_ticker(aTicker)
+            data = iModel.read_by_eikon_ticker(aTicker)
             id = data['_id']
             updatedData=iEikonFunction(aTicker)
             updatedData["LastModified"]= datetime.utcnow()
@@ -176,7 +176,7 @@ def earnings_power(iModel, aEikonTickers):
     for aTicker in aEikonTickers:
         try:
             dividends = epsL12M = eps3Y = epsExtraL12M = epsExtra3Y = 0
-            data = iModel.read_by_ticker(aTicker)
+            data = iModel.read_by_eikon_ticker(aTicker)
             #Take the last 12 values that have estimated = false
             orderedData = collections.OrderedDict(sorted(data["DataByFiscalQuarter"].items()))
             fqs = [v for v in orderedData.values() if 'false' in v.values()][-16:]
@@ -257,7 +257,7 @@ def delete_ticker_data(iModel, iKeyListToBeRemoved, aEikonTickers):
     wrongTickers=[]
     for aTicker in aEikonTickers:
         try:
-            data = iModel.read_by_ticker(aTicker)
+            data = iModel.read_by_eikon_ticker(aTicker)
             id = data['_id']
             for key in iKeyListToBeRemoved:
                 try:

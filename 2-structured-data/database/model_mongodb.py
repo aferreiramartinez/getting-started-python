@@ -43,13 +43,17 @@ def delete(id):
 
 
 # [START read]
-def read(id):
-    result = db.eikonTwo.find_one(_id(id))
+def read(mongo_query):
+    result = db.eikonTwo.find_one(mongo_query)
     return from_mongo(result)
 # [END read]
 
-def read_by_ticker(iEikonTicker):
+def read_by_eikon_ticker(iEikonTicker):
     result = db.eikonTwo.find_one({ "EikonTicker": iEikonTicker })
+    return from_mongo(result)
+
+def read_by_ticker(iEikonTicker):
+    result = db.eikonTwo.find_one({ "Ticker": iEikonTicker })
     return from_mongo(result)
 
 def read_all():

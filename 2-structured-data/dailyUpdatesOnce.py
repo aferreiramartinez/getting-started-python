@@ -100,4 +100,4 @@ if __name__ == '__main__':
     model = model_mongodb
     file = 'DailyUpdated.txt'
     aEikonTickers=retrieve_eikon_file(file)
-    update_ticker_function(model, ekLib.get_daily_updates, aEikonTickers)
+    update_ticker_function(model, ekLib.get_365_day_share_price, aEikonTickers)
